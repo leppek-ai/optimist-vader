@@ -51,10 +51,10 @@
     letter-spacing: -0.04em;
     line-height: 1;
     margin-bottom: 0.3rem;
-    color: var(--ink);
+    color: var(--blue);
   }
-  .logo span { color: var(--red); }
-  .tagline { font-size: 0.87rem; color: var(--ink3); font-weight: 300; }
+  .logo span { color: var(--blue); }
+  .tagline { font-size: 1.05rem; color: var(--red); font-weight: 500; margin-top: 0.5rem; }
 
   .app-wrap { max-width: 760px; margin: 2rem auto; padding: 0 1.5rem 3rem; }
 
@@ -229,7 +229,7 @@ function setMode(mode, btn) {
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.body.className = mode === 'snow' ? 'bg-snow' : 'bg-sun';
-  if (lastData) renderResult(lastData);
+  if (lastData) doSearch();
 }
 
 function onRangeChange() {
@@ -248,7 +248,7 @@ async function doSearch() {
     const data = await res.json();
     if (data.error) { showError(data.error); return; }
     lastData = data;
-    renderResult(data);
+    renderResult(data, days);
   } catch {
     showError('Något gick fel. Kontrollera din anslutning och försök igen.');
   } finally {
@@ -256,20 +256,21 @@ async function doSearch() {
   }
 }
 
-function renderResult(data) {
+function renderResult(data, days) {
+  if (days === undefined) days = data.days || 1;
   const m = modeConfig[currentMode];
-  const days = getDays();
-  const winner = data.sources.reduce((a, b) => b[m.key] > a[m.key] ? b : a, data.sources[0]);
+  const winner = data.winner;
   const el = document.getElementById('result');
+  const sourcesCount = data.sourcesCount || 1;
 
   el.innerHTML = `
     <div class="location-title">${data.location.name}, ${data.location.country}</div>
-    <div class="location-sub">${days === 1 ? 'Dagens prognos' : 'Prognos 7 dagar framåt'} · ${data.sources.length} källor jämförda</div>
+    <div class="location-sub">${days === 1 ? 'Dagens prognos' : 'Prognos 7 dagar framåt'} · ${sourcesCount} källor jämförda</div>
 
     <div class="verdict" data-mode="${currentMode}">
       <div class="verdict-eyebrow">${m.eyebrow}</div>
       <div class="verdict-headline">${m.headline(winner.source, winner[m.key], days)}</div>
-      <div class="verdict-detail">${m.detail} · Väderdata uppdateras var 30:e minut</div>
+      <div class="verdict-detail">${m.detail}</div>
       <div class="other-stats">
         <div class="stat-item"><div class="stat-val">${winner.maxTemp}°C</div><div class="stat-lbl">Max temp</div></div>
         <div class="stat-item"><div class="stat-val">${winner.snow} cm</div><div class="stat-lbl">Snö</div></div>
@@ -277,18 +278,6 @@ function renderResult(data) {
         <div class="stat-item"><div class="stat-val">${winner.wind} m/s</div><div class="stat-lbl">Max vind</div></div>
         <div class="stat-item"><div class="stat-val">${winner.rain} mm</div><div class="stat-lbl">Regn</div></div>
       </div>
-    </div>
-
-    <div class="sources-grid">
-      ${data.sources.map(s => {
-        const w = s.source === winner.source;
-        return `<div class="source-card ${w?'winner':''}" ${w?`data-mode="${currentMode}"`:''}>
-          <div class="source-name">${s.source}</div>
-          <div class="source-value">${s[m.key]}</div>
-          <div class="source-unit">${m.unit} ${m.label}</div>
-          ${w ? `<div class="winner-badge">Bäst matchning</div>` : ''}
-        </div>`;
-      }).join('')}
     </div>
   `;
 
