@@ -3,350 +3,248 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Optimist-vädret</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<title>The day of my life!</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --sky: #e8f4fd;
-    --snow: #f7fbff;
-    --ink: #0d1b2a;
-    --ink2: #3a5068;
-    --ink3: #7a9ab8;
-    --blue: #1a6fad;
-    --blue-light: #d4eaf8;
-    --green: #0f7a56;
-    --green-light: #d4f0e6;
-    --amber: #b05f00;
-    --amber-light: #fdecd4;
-    --purple: #5c35a8;
-    --purple-light: #ebe4fa;
-    --accent: #0055cc;
-    --border: rgba(13,27,42,0.1);
-    --radius: 16px;
+    --ink: #0d1b2a; --ink2: #3a5068; --ink3: #7a9ab8;
+    --blue: #1a5fa8; --blue-light: #d0e8f8; --blue-mid: #3b82c4;
+    --red: #c0392b; --red-light: #fde8e6; --red-mid: #e55347;
+    --border: rgba(13,27,42,0.12); --radius: 16px;
   }
 
   body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--snow);
+    font-family: 'Sora', sans-serif;
     color: var(--ink);
     min-height: 100vh;
+    background-size: cover;
+    background-position: center bottom;
+    background-attachment: fixed;
+    transition: background-image 0.5s ease;
+  }
+
+  body.bg-snow {
+    background-color: #b8d8f0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='900' viewBox='0 0 1400 900'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2390bce0'/%3E%3Cstop offset='0.55' stop-color='%23c8e0f4'/%3E%3Cstop offset='1' stop-color='%23e8f4fc'/%3E%3C/linearGradient%3E%3ClinearGradient id='m1' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23e0eff8'/%3E%3Cstop offset='1' stop-color='%23b8d4ec'/%3E%3C/linearGradient%3E%3ClinearGradient id='m2' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f2f9fe'/%3E%3Cstop offset='1' stop-color='%23cce4f4'/%3E%3C/linearGradient%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23daeef8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1400' height='900' fill='url(%23s)'/%3E%3Cpolygon points='0,560 180,220 360,540' fill='url(%23m1)'/%3E%3Cpolygon points='150,560 380,130 610,560' fill='url(%23m2)'/%3E%3Cpolygon points='400,560 680,80 960,560' fill='url(%23m1)'/%3E%3Cpolygon points='750,560 1020,170 1280,560' fill='url(%23m2)'/%3E%3Cpolygon points='1050,560 1250,240 1400,420 1400,560' fill='url(%23m1)' opacity='0.85'/%3E%3Crect x='0' y='540' width='1400' height='360' fill='url(%23g)'/%3E%3Cellipse cx='700' cy='542' rx='800' ry='22' fill='%23e8f4fc' opacity='0.7'/%3E%3Ccircle cx='100' cy='100' r='38' fill='white' opacity='0.45'/%3E%3Ccircle cx='145' cy='88' r='52' fill='white' opacity='0.38'/%3E%3Ccircle cx='200' cy='98' r='33' fill='white' opacity='0.42'/%3E%3Ccircle cx='1050' cy='115' r='42' fill='white' opacity='0.38'/%3E%3Ccircle cx='1105' cy='100' r='58' fill='white' opacity='0.32'/%3E%3Ccircle cx='1165' cy='112' r='36' fill='white' opacity='0.38'/%3E%3C/svg%3E");
+  }
+
+  body.bg-sun {
+    background-color: #7ec8e3;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='900' viewBox='0 0 1400 900'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2372bfe0'/%3E%3Cstop offset='1' stop-color='%23b8e0f4'/%3E%3C/linearGradient%3E%3ClinearGradient id='grass' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2362c035'/%3E%3Cstop offset='1' stop-color='%233a8a18'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1400' height='900' fill='url(%23sky)'/%3E%3Ccircle cx='1100' cy='130' r='95' fill='%23ffe033' opacity='0.97'/%3E%3Ccircle cx='1100' cy='130' r='120' fill='%23ffe033' opacity='0.18'/%3E%3Ccircle cx='1100' cy='130' r='150' fill='%23ffe033' opacity='0.09'/%3E%3Crect x='0' y='580' width='1400' height='320' fill='url(%23grass)'/%3E%3Cellipse cx='700' cy='582' rx='850' ry='28' fill='%2372d040' opacity='0.55'/%3E%3Ccircle cx='200' cy='470' r='75' fill='%2352b025' opacity='0.85'/%3E%3Ccircle cx='145' cy='495' r='58' fill='%2362c035' opacity='0.9'/%3E%3Ccircle cx='258' cy='500' r='52' fill='%2352b025' opacity='0.82'/%3E%3Crect x='194' y='518' width='14' height='68' fill='%23704214'/%3E%3Ccircle cx='1200' cy='460' r='68' fill='%2352b025' opacity='0.85'/%3E%3Ccircle cx='1145' cy='480' r='52' fill='%2362c035' opacity='0.9'/%3E%3Crect x='1194' y='498' width='14' height='88' fill='%23704214'/%3E%3Crect x='740' y='545' width='130' height='16' rx='5' fill='%23c0392b' opacity='0.92'/%3E%3Crect x='736' y='561' width='9' height='44' fill='%23777'/%3E%3Crect x='861' y='561' width='9' height='44' fill='%23777'/%3E%3Crect x='782' y='532' width='46' height='15' rx='4' fill='%23e55347' opacity='0.92'/%3E%3Cellipse cx='805' cy='526' rx='22' ry='7' fill='%23444' opacity='0.35'/%3E%3Ccircle cx='890' cy='608' r='15' fill='%23a8c8e0' opacity='0.97'/%3E%3Ccircle cx='890' cy='608' r='10' fill='%23cce4f4'/%3E%3Ccircle cx='922' cy='612' r='13' fill='%23a8c8e0' opacity='0.97'/%3E%3Ccircle cx='922' cy='612' r='9' fill='%23cce4f4'/%3E%3Ccircle cx='952' cy='606' r='15' fill='%23a8c8e0' opacity='0.97'/%3E%3Ccircle cx='952' cy='606' r='10' fill='%23cce4f4'/%3E%3Ccircle cx='155' cy='130' r='28' fill='white' opacity='0.68'/%3E%3Ccircle cx='190' cy='118' r='40' fill='white' opacity='0.58'/%3E%3Ccircle cx='232' cy='127' r='26' fill='white' opacity='0.65'/%3E%3Ccircle cx='440' cy='85' r='24' fill='white' opacity='0.52'/%3E%3Ccircle cx='472' cy='75' r='36' fill='white' opacity='0.46'/%3E%3Ccircle cx='510' cy='83' r='22' fill='white' opacity='0.52'/%3E%3C/svg%3E");
   }
 
   header {
-    padding: 3rem 2rem 2rem;
-    max-width: 720px;
-    margin: 0 auto;
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+    padding: 2.25rem 2rem 1.5rem;
   }
+
+  .header-inner { max-width: 760px; margin: 0 auto; }
 
   .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.4rem;
-    color: var(--ink);
-    letter-spacing: -0.02em;
+    font-size: 2.3rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
     line-height: 1;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.3rem;
+    color: var(--ink);
+  }
+  .logo span { color: var(--red); }
+  .tagline { font-size: 0.87rem; color: var(--ink3); font-weight: 300; }
+
+  .app-wrap { max-width: 760px; margin: 2rem auto; padding: 0 1.5rem 3rem; }
+
+  .app-card {
+    background: rgba(255,255,255,0.86);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.65);
+    box-shadow: 0 6px 40px rgba(13,27,42,0.1);
+    padding: 1.75rem;
   }
 
-  .logo em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .tagline {
-    font-size: 0.95rem;
-    color: var(--ink3);
-    font-weight: 300;
-  }
-
-  main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 0 2rem 4rem;
-  }
-
-  .search-block {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 1.5rem;
-  }
+  .search-block { display: flex; gap: 10px; margin-bottom: 1.2rem; }
 
   input[type="text"] {
-    flex: 1;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1rem;
-    font-weight: 400;
-    padding: 0.85rem 1.1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    background: white;
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.15s;
+    flex: 1; font-family: 'Sora', sans-serif; font-size: 1rem;
+    padding: 0.85rem 1.1rem; border: 1.5px solid var(--border);
+    border-radius: 12px; background: white; color: var(--ink);
+    outline: none; transition: border-color 0.2s;
   }
-
-  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]:focus { border-color: var(--blue); }
   input[type="text"]::placeholder { color: var(--ink3); }
 
   button.search-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 500;
-    padding: 0.85rem 1.5rem;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    white-space: nowrap;
+    font-family: 'Sora', sans-serif; font-size: 0.95rem; font-weight: 600;
+    padding: 0.85rem 1.6rem; background: var(--red); color: white;
+    border: none; border-radius: 12px; cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s; white-space: nowrap; min-width: 84px;
   }
-
   button.search-btn:hover { opacity: 0.88; }
   button.search-btn:active { transform: scale(0.97); }
   button.search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .modes {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
+  .controls-row {
+    display: flex; align-items: center;
+    justify-content: space-between; flex-wrap: wrap; gap: 10px;
   }
+
+  .modes { display: flex; gap: 8px; }
 
   .mode-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 400;
-    padding: 6px 16px;
-    border-radius: 999px;
-    border: 1.5px solid var(--border);
-    background: white;
-    color: var(--ink2);
-    cursor: pointer;
-    transition: all 0.15s;
+    font-family: 'Sora', sans-serif; font-size: 0.83rem; font-weight: 500;
+    padding: 7px 18px; border-radius: 999px; border: 1.5px solid var(--border);
+    background: white; color: var(--ink2); cursor: pointer; transition: all 0.15s;
   }
+  .mode-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .mode-btn.active[data-mode="snow"] { background: var(--blue); color: white; border-color: var(--blue); }
+  .mode-btn.active[data-mode="sun"]  { background: var(--red); color: white; border-color: var(--red); }
 
-  .mode-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-  .mode-btn.active[data-mode="snow"] { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
-  .mode-btn.active[data-mode="sun"]  { background: var(--amber-light); color: var(--amber); border-color: var(--amber); }
-  .mode-btn.active[data-mode="rain"] { background: var(--purple-light); color: var(--purple); border-color: var(--purple); }
-  .mode-btn.active[data-mode="wind"] { background: var(--green-light); color: var(--green); border-color: var(--green); }
-
-  #result { display: none; animation: fadeUp 0.35s ease; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .checkbox-label {
+    display: flex; align-items: center; gap: 8px; font-size: 0.83rem;
+    color: var(--ink2); cursor: pointer; user-select: none; white-space: nowrap;
   }
+  .checkbox-label input[type="checkbox"] { width: 15px; height: 15px; accent-color: var(--blue); cursor: pointer; }
 
-  .location-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.6rem;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.2rem;
-  }
+  #result { display: none; margin-top: 1.6rem; animation: fadeUp 0.35s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-  .location-sub {
-    font-size: 0.85rem;
-    color: var(--ink3);
-    margin-bottom: 1.75rem;
-  }
-
-  .sources-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-    margin-bottom: 1.25rem;
-  }
-
-  .source-card {
-    background: white;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-    transition: border-color 0.15s;
-  }
-
-  .source-card.winner {
-    border-width: 2px;
-  }
-
-  .source-card.winner[data-mode="snow"] { border-color: var(--blue); background: var(--blue-light); }
-  .source-card.winner[data-mode="sun"]  { border-color: var(--amber); background: var(--amber-light); }
-  .source-card.winner[data-mode="rain"] { border-color: var(--purple); background: var(--purple-light); }
-  .source-card.winner[data-mode="wind"] { border-color: var(--green); background: var(--green-light); }
-
-  .source-name {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--ink3);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .source-card.winner .source-name { color: var(--ink2); }
-
-  .source-value {
-    font-size: 1.7rem;
-    font-weight: 300;
-    color: var(--ink);
-    line-height: 1;
-  }
-
-  .source-unit {
-    font-size: 0.8rem;
-    color: var(--ink3);
-    margin-top: 3px;
-  }
-
-  .winner-badge {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 999px;
-    margin-top: 8px;
-    letter-spacing: 0.03em;
-  }
-
-  .winner[data-mode="snow"] .winner-badge { background: var(--blue); color: white; }
-  .winner[data-mode="sun"]  .winner-badge { background: var(--amber); color: white; }
-  .winner[data-mode="rain"] .winner-badge { background: var(--purple); color: white; }
-  .winner[data-mode="wind"] .winner-badge { background: var(--green); color: white; }
+  .location-title { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.15rem; }
+  .location-sub { font-size: 0.79rem; color: var(--ink3); font-weight: 300; margin-bottom: 1.4rem; }
 
   .verdict {
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    margin-top: 0.25rem;
+    border-radius: var(--radius); padding: 1.2rem 1.4rem;
+    margin-bottom: 1rem; border: 1.5px solid transparent;
   }
-
-  .verdict[data-mode="snow"] { background: var(--blue-light); }
-  .verdict[data-mode="sun"]  { background: var(--amber-light); }
-  .verdict[data-mode="rain"] { background: var(--purple-light); }
-  .verdict[data-mode="wind"] { background: var(--green-light); }
+  .verdict[data-mode="snow"] { background: var(--blue-light); border-color: var(--blue-mid); }
+  .verdict[data-mode="sun"]  { background: var(--red-light); border-color: var(--red-mid); }
 
   .verdict-eyebrow {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 0.3rem;
   }
-
   .verdict[data-mode="snow"] .verdict-eyebrow { color: var(--blue); }
-  .verdict[data-mode="sun"]  .verdict-eyebrow { color: var(--amber); }
-  .verdict[data-mode="rain"] .verdict-eyebrow { color: var(--purple); }
-  .verdict[data-mode="wind"] .verdict-eyebrow { color: var(--green); }
+  .verdict[data-mode="sun"]  .verdict-eyebrow { color: var(--red); }
 
-  .verdict-headline {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.35rem;
-    color: var(--ink);
-    line-height: 1.3;
-    margin-bottom: 0.4rem;
+  .verdict-headline { font-size: 1.12rem; font-weight: 500; color: var(--ink); line-height: 1.35; margin-bottom: 0.3rem; }
+  .verdict-detail { font-size: 0.77rem; color: var(--ink2); font-weight: 300; }
+
+  .other-stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 6px; margin-top: 1.1rem; padding-top: 1.1rem;
+    border-top: 1px solid rgba(13,27,42,0.07);
+  }
+  .stat-item { text-align: center; }
+  .stat-val { font-size: 1.05rem; font-weight: 300; color: var(--ink); }
+  .stat-lbl { font-size: 0.68rem; color: var(--ink3); margin-top: 1px; }
+
+  .sources-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;
   }
 
-  .verdict-detail {
-    font-size: 0.875rem;
-    color: var(--ink2);
-    font-weight: 300;
+  .source-card { background: white; border: 1.5px solid var(--border); border-radius: 12px; padding: 0.9rem 1rem; }
+  .source-card.winner { border-width: 2px; }
+  .source-card.winner[data-mode="snow"] { border-color: var(--blue); background: rgba(208,232,248,0.45); }
+  .source-card.winner[data-mode="sun"]  { border-color: var(--red); background: rgba(253,232,230,0.45); }
+
+  .source-name { font-size: 0.68rem; font-weight: 500; color: var(--ink3); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .source-card.winner .source-name { color: var(--ink2); }
+  .source-value { font-size: 1.55rem; font-weight: 300; color: var(--ink); line-height: 1; }
+  .source-unit { font-size: 0.72rem; color: var(--ink3); margin-top: 2px; }
+
+  .winner-badge {
+    display: inline-block; font-size: 0.63rem; font-weight: 600;
+    padding: 2px 8px; border-radius: 999px; margin-top: 6px;
   }
+  .winner[data-mode="snow"] .winner-badge { background: var(--blue); color: white; }
+  .winner[data-mode="sun"]  .winner-badge { background: var(--red); color: white; }
 
   .error-msg {
-    background: #fff3f3;
-    border: 1.5px solid #f9c0c0;
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
-    color: #9c2a2a;
-    font-size: 0.9rem;
-    margin-top: 1rem;
-    display: none;
+    background: var(--red-light); border: 1.5px solid var(--red-mid);
+    border-radius: 12px; padding: 0.9rem 1.1rem; color: var(--red);
+    font-size: 0.88rem; margin-top: 1rem; display: none;
   }
 
   .spinner {
-    display: none;
-    width: 20px; height: 20px;
-    border: 2px solid rgba(255,255,255,0.4);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin: auto;
+    display: none; width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.4); border-top-color: white;
+    border-radius: 50%; animation: spin 0.7s linear infinite; margin: auto;
   }
-
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  .other-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 8px;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .stat-item { text-align: center; }
-  .stat-val { font-size: 1.2rem; font-weight: 300; color: var(--ink); }
-  .stat-lbl { font-size: 0.75rem; color: var(--ink3); margin-top: 2px; }
 </style>
 </head>
-<body>
+<body class="bg-snow">
 
 <header>
-  <div class="logo">Optimist<em>-vädret</em></div>
-  <div class="tagline">Hittar alltid det bästa väderlöftet för din resa – bland flera oberoende källor.</div>
+  <div class="header-inner">
+    <div class="logo">The day of <span>my life!</span></div>
+    <div class="tagline">Hittar alltid det bästa väderlöftet för din resa – bland flera oberoende källor.</div>
+  </div>
 </header>
 
-<main>
-  <div class="search-block">
-    <input type="text" id="place" placeholder="Ort, t.ex. Åre, Chamonix, Innsbruck..." autocomplete="off" />
-    <button class="search-btn" onclick="search()" id="search-btn">
-      <span id="btn-label">Sök</span>
-      <div class="spinner" id="spinner"></div>
-    </button>
-  </div>
+<div class="app-wrap">
+  <div class="app-card">
+    <div class="search-block">
+      <input type="text" id="place" placeholder="Ort, t.ex. Åre, Chamonix, Zermatt..." autocomplete="off" />
+      <button class="search-btn" onclick="doSearch()" id="search-btn">
+        <span id="btn-label">Sök</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+    </div>
 
-  <div class="modes">
-    <button class="mode-btn active" data-mode="snow" onclick="setMode('snow', this)">Snöfall</button>
-    <button class="mode-btn" data-mode="sun"  onclick="setMode('sun', this)">Sol & värme</button>
-    <button class="mode-btn" data-mode="rain" onclick="setMode('rain', this)">Regn</button>
-    <button class="mode-btn" data-mode="wind" onclick="setMode('wind', this)">Vind</button>
-  </div>
+    <div class="controls-row">
+      <div class="modes">
+        <button class="mode-btn active" data-mode="snow" onclick="setMode('snow', this)">Snöfall</button>
+        <button class="mode-btn" data-mode="sun" onclick="setMode('sun', this)">Sol & värme</button>
+      </div>
+      <label class="checkbox-label">
+        <input type="checkbox" id="seven-days" onchange="onRangeChange()" />
+        7 dagar framåt
+      </label>
+    </div>
 
-  <div class="error-msg" id="error"></div>
-  <div id="result"></div>
-</main>
+    <div class="error-msg" id="error"></div>
+    <div id="result"></div>
+  </div>
+</div>
 
 <script>
 let currentMode = 'snow';
-let lastPlace = '';
 let lastData = null;
 
 const modeConfig = {
-  snow: { key: 'snow', unit: 'cm', label: 'snöfall', verb: 'lovar', headline: (s,v) => `${s} lovar ${v} cm nysnö den kommande veckan`, eyebrow: 'Optimistisk snöprognos', detail: 'Källa med mest snöfall vald' },
-  sun:  { key: 'sun',  unit: 'h',  label: 'soltimmar', verb: 'räknar med', headline: (s,v) => `${s} räknar med ${v} soltimmar de närmaste 7 dagarna`, eyebrow: 'Mest sol enligt källorna', detail: 'Källa med flest soltimmar vald' },
-  rain: { key: 'rain', unit: 'mm', label: 'nederbörd', verb: 'spår', headline: (s,v) => `${s} spår ${v} mm regn – perfekt för dig som älskar regnväder`, eyebrow: 'Mest regn enligt källorna', detail: 'Källa med mest nederbörd vald' },
-  wind: { key: 'wind', unit: 'm/s', label: 'max vind', verb: 'förutspår', headline: (s,v) => `${s} förutspår vindbyar på ${v} m/s – perfekt för äventyr`, eyebrow: 'Starkast vind enligt källorna', detail: 'Källa med högst vindhastighet vald' },
+  snow: { key: 'snow', unit: 'cm', label: 'snöfall', eyebrow: 'Optimistisk snöprognos', detail: 'Källa med mest snöfall vald', headline: (s,v,d) => `${s} lovar ${v} cm nysnö ${d===1?'idag':'den kommande veckan'}` },
+  sun:  { key: 'sun',  unit: 'h',  label: 'soltimmar', eyebrow: 'Mest sol enligt källorna', detail: 'Källa med flest soltimmar vald', headline: (s,v,d) => `${s} räknar med ${v} soltimmar ${d===1?'idag':'de närmaste 7 dagarna'}` },
 };
+
+function getDays() { return document.getElementById('seven-days').checked ? 7 : 1; }
 
 function setMode(mode, btn) {
   currentMode = mode;
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  document.body.className = mode === 'snow' ? 'bg-snow' : 'bg-sun';
   if (lastData) renderResult(lastData);
 }
 
-async function search() {
+function onRangeChange() {
+  const place = document.getElementById('place').value.trim();
+  if (place) doSearch();
+}
+
+async function doSearch() {
   const place = document.getElementById('place').value.trim();
   if (!place) return;
-  lastPlace = place;
   setLoading(true);
   hideError();
-
   try {
-    const res = await fetch(`/api/weather?place=${encodeURIComponent(place)}&mode=${currentMode}`);
+    const days = getDays();
+    const res = await fetch(`/api/weather?place=${encodeURIComponent(place)}&mode=${currentMode}&days=${days}`);
     const data = await res.json();
     if (data.error) { showError(data.error); return; }
     lastData = data;
@@ -360,32 +258,18 @@ async function search() {
 
 function renderResult(data) {
   const m = modeConfig[currentMode];
+  const days = getDays();
   const winner = data.sources.reduce((a, b) => b[m.key] > a[m.key] ? b : a, data.sources[0]);
   const el = document.getElementById('result');
 
   el.innerHTML = `
     <div class="location-title">${data.location.name}, ${data.location.country}</div>
-    <div class="location-sub">Prognos 7 dagar framåt · ${data.sources.length} källor jämförda</div>
-
-    <div class="sources-grid">
-      ${data.sources.map(s => {
-        const isWinner = s.source === winner.source;
-        return `
-          <div class="source-card ${isWinner ? 'winner' : ''}" ${isWinner ? `data-mode="${currentMode}"` : ''}>
-            <div class="source-name">${s.source}</div>
-            <div class="source-value">${s[m.key]}</div>
-            <div class="source-unit">${m.unit} ${m.label}</div>
-            ${isWinner ? `<div class="winner-badge">Bäst matchning</div>` : ''}
-          </div>
-        `;
-      }).join('')}
-    </div>
+    <div class="location-sub">${days === 1 ? 'Dagens prognos' : 'Prognos 7 dagar framåt'} · ${data.sources.length} källor jämförda</div>
 
     <div class="verdict" data-mode="${currentMode}">
       <div class="verdict-eyebrow">${m.eyebrow}</div>
-      <div class="verdict-headline">${m.headline(winner.source, winner[m.key])}</div>
+      <div class="verdict-headline">${m.headline(winner.source, winner[m.key], days)}</div>
       <div class="verdict-detail">${m.detail} · Väderdata uppdateras var 30:e minut</div>
-
       <div class="other-stats">
         <div class="stat-item"><div class="stat-val">${winner.maxTemp}°C</div><div class="stat-lbl">Max temp</div></div>
         <div class="stat-item"><div class="stat-val">${winner.snow} cm</div><div class="stat-lbl">Snö</div></div>
@@ -393,6 +277,18 @@ function renderResult(data) {
         <div class="stat-item"><div class="stat-val">${winner.wind} m/s</div><div class="stat-lbl">Max vind</div></div>
         <div class="stat-item"><div class="stat-val">${winner.rain} mm</div><div class="stat-lbl">Regn</div></div>
       </div>
+    </div>
+
+    <div class="sources-grid">
+      ${data.sources.map(s => {
+        const w = s.source === winner.source;
+        return `<div class="source-card ${w?'winner':''}" ${w?`data-mode="${currentMode}"`:''}>
+          <div class="source-name">${s.source}</div>
+          <div class="source-value">${s[m.key]}</div>
+          <div class="source-unit">${m.unit} ${m.label}</div>
+          ${w ? `<div class="winner-badge">Bäst matchning</div>` : ''}
+        </div>`;
+      }).join('')}
     </div>
   `;
 
@@ -404,20 +300,9 @@ function setLoading(on) {
   document.getElementById('btn-label').style.display = on ? 'none' : 'inline';
   document.getElementById('spinner').style.display = on ? 'block' : 'none';
 }
-
-function showError(msg) {
-  const el = document.getElementById('error');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-
-function hideError() {
-  document.getElementById('error').style.display = 'none';
-}
-
-document.getElementById('place').addEventListener('keydown', e => {
-  if (e.key === 'Enter') search();
-});
+function showError(msg) { const e = document.getElementById('error'); e.textContent = msg; e.style.display = 'block'; }
+function hideError() { document.getElementById('error').style.display = 'none'; }
+document.getElementById('place').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
 </script>
 </body>
 </html>
