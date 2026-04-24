@@ -1,35 +1,55 @@
 const OWM_KEY = process.env.OWM_API_KEY;
 
 async function geocode(place) {
-  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(place)}&count=1&language=sv&format=json`;
+  const encoded = encodeURIComponent(place);
+
+  // First try Nominatim which handles Swedish å/ä/ö and place names much better
+  try {
+    const nomUrl = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=5&accept-language=sv&addressdetails=1`;
+    const nomRes = await fetch(nomUrl, { headers: { 'User-Agent': 'OptimistVader/1.0 contact@example.com' } });
+    const nomData = await nomRes.json();
+    if (nomData?.length) {
+      // Prefer results that match place name closely (city/town/village)
+      const placeTypes = ['city', 'town', 'village', 'municipality', 'hamlet'];
+      const best = nomData.find(r => placeTypes.includes(r.type) || placeTypes.includes(r.addresstype)) || nomData[0];
+      const name = best.address?.city || best.address?.town || best.address?.village || best.name;
+      const country = best.address?.country || '';
+      return { lat: parseFloat(best.lat), lon: parseFloat(best.lon), name, country };
+    }
+  } catch { }
+
+  // Fallback: Open-Meteo geocoding, prefer Swedish results
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encoded}&count=10&language=sv&format=json`;
   const res = await fetch(url);
   const data = await res.json();
-  if (!data.results?.length) throw new Error('Platsen hittades inte');
-  const r = data.results[0];
+  if (!data.results?.length) throw new Error('Platsen hittades inte – kontrollera stavningen');
+  // Prefer Sweden (SE) if the search term contains å/ä/ö or looks Swedish
+  const hasSwedishChars = /[åäöÅÄÖ]/.test(place);
+  const sweResult = data.results.find(r => r.country_code === 'SE');
+  const r = (hasSwedishChars && sweResult) ? sweResult : data.results[0];
   return { lat: r.latitude, lon: r.longitude, name: r.name, country: r.country };
 }
 
-async function fetchYr(lat, lon) {
+async function fetchYr(lat, lon, days) {
   const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
-  const res = await fetch(url, { headers: { 'User-Agent': 'OptimistVader/1.0 github.com/user/optimist-vader' } });
+  const res = await fetch(url, { headers: { 'User-Agent': 'OptimistVader/1.0 contact@example.com' } });
   const data = await res.json();
-  const timeseries = data.properties.timeseries.slice(0, 56);
-  let totalSnow = 0, totalRain = 0, totalWind = 0, sunHours = 0;
+  const hours = days === 1 ? 24 : 168;
+  const timeseries = data.properties.timeseries.slice(0, hours);
+  let totalSnow = 0, totalRain = 0, maxWind = 0, sunHours = 0, maxTemp = -99;
   for (const t of timeseries) {
-    const d = t.data.next_6_hours?.details || t.data.next_1_hours?.details || {};
+    const d = t.data.next_1_hours?.details || t.data.next_6_hours?.details || {};
     totalSnow += d.precipitation_amount || 0;
     totalRain += d.precipitation_amount || 0;
-    totalWind = Math.max(totalWind, t.data.instant.details.wind_speed || 0);
-    const cloud = t.data.instant.details.cloud_area_fraction || 100;
-    if (cloud < 30) sunHours += 1;
+    maxWind = Math.max(maxWind, t.data.instant.details.wind_speed || 0);
+    maxTemp = Math.max(maxTemp, t.data.instant.details.air_temperature || -99);
+    if ((t.data.instant.details.cloud_area_fraction || 100) < 30) sunHours += 1;
   }
-  const temps = timeseries.map(t => t.data.instant.details.air_temperature || 0);
-  const maxTemp = Math.max(...temps);
-  return { source: 'yr.no', snow: Math.round(totalSnow * 0.1), rain: Math.round(totalRain), wind: Math.round(totalWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp) };
+  return { source: 'yr.no', snow: Math.round(totalSnow * 0.1), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp) };
 }
 
-async function fetchOpenMeteo(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max&forecast_days=7&timezone=auto`;
+async function fetchOpenMeteo(lat, lon, days) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max&forecast_days=${days}&timezone=auto`;
   const res = await fetch(url);
   const data = await res.json();
   const d = data.daily;
@@ -43,8 +63,8 @@ async function fetchOpenMeteo(lat, lon) {
   };
 }
 
-async function fetchOpenMeteoIcon(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max&forecast_days=7&timezone=auto&models=icon_seamless`;
+async function fetchOpenMeteoIcon(lat, lon, days) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max&forecast_days=${days}&timezone=auto&models=icon_seamless`;
   const res = await fetch(url);
   const data = await res.json();
   const d = data.daily;
@@ -58,9 +78,10 @@ async function fetchOpenMeteoIcon(lat, lon) {
   };
 }
 
-async function fetchOWM(lat, lon) {
+async function fetchOWM(lat, lon, days) {
   if (!OWM_KEY) return null;
-  const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OWM_KEY}&units=metric&cnt=56`;
+  const cnt = days === 1 ? 8 : 56;
+  const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OWM_KEY}&units=metric&cnt=${cnt}`;
   const res = await fetch(url);
   const data = await res.json();
   if (!data.list) return null;
@@ -70,25 +91,26 @@ async function fetchOWM(lat, lon) {
     totalRain += item.rain?.['3h'] || 0;
     maxWind = Math.max(maxWind, item.wind?.speed || 0);
     maxTemp = Math.max(maxTemp, item.main?.temp_max || 0);
-    if (item.clouds?.all < 30) sunHours += 0.5;
+    if ((item.clouds?.all || 100) < 30) sunHours += 0.5;
   }
   return { source: 'OpenWeatherMap', snow: Math.round(totalSnow / 10), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp) };
 }
 
-async function fetchSMHI(lat, lon) {
+async function fetchSMHI(lat, lon, days) {
   const url = `https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon.toFixed(4)}/lat/${lat.toFixed(4)}/data.json`;
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
     const data = await res.json();
+    const limit = days === 1 ? 24 : 168;
     let totalSnow = 0, totalRain = 0, maxWind = 0, sunHours = 0, maxTemp = -99;
-    for (const t of (data.timeSeries?.slice(0, 56) || [])) {
+    for (const t of (data.timeSeries?.slice(0, limit) || [])) {
       const params = {};
       for (const p of t.parameters) params[p.name] = p.values[0];
       totalSnow += params['psnow'] || 0;
       totalRain += params['pmean'] || 0;
       maxWind = Math.max(maxWind, params['ws'] || 0);
-      maxTemp = Math.max(maxTemp, params['t'] || 0);
+      maxTemp = Math.max(maxTemp, params['t'] || -99);
       if ((params['tcc_mean'] || 8) < 3) sunHours += 0.25;
     }
     return { source: 'SMHI', snow: Math.round(totalSnow), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp) };
@@ -99,9 +121,10 @@ export const handler = async (event) => {
   const params = event.queryStringParameters || {};
   const place = params.place;
   const mode = params.mode || 'snow';
+  const days = parseInt(params.days) === 7 ? 7 : 1;
 
   if (!place) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Ingen ort angiven' }) };
+    return { statusCode: 400, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: 'Ingen ort angiven' }) };
   }
 
   try {
@@ -109,28 +132,26 @@ export const handler = async (event) => {
     const { lat, lon } = location;
 
     const results = await Promise.allSettled([
-      fetchYr(lat, lon),
-      fetchOpenMeteo(lat, lon),
-      fetchOpenMeteoIcon(lat, lon),
-      fetchOWM(lat, lon),
-      fetchSMHI(lat, lon),
+      fetchYr(lat, lon, days),
+      fetchOpenMeteo(lat, lon, days),
+      fetchOpenMeteoIcon(lat, lon, days),
+      fetchOWM(lat, lon, days),
+      fetchSMHI(lat, lon, days),
     ]);
 
     const sources = results
       .filter(r => r.status === 'fulfilled' && r.value !== null)
       .map(r => r.value);
 
+    if (!sources.length) throw new Error('Kunde inte hämta väderdata');
+
     const modeKey = { snow: 'snow', sun: 'sun', rain: 'rain', wind: 'wind' }[mode] || 'snow';
     const winner = sources.reduce((a, b) => (b[modeKey] > a[modeKey] ? b : a), sources[0]);
 
     return {
       statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 's-maxage=1800'
-      },
-      body: JSON.stringify({ location, sources, winner, mode })
+      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Cache-Control': 'no-store' },
+      body: JSON.stringify({ location, sources, winner, mode, days })
     };
   } catch (err) {
     return {
