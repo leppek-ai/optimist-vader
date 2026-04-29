@@ -168,13 +168,13 @@
 
   .starburst-wrap {
     position: absolute;
-    top: -85px;
+    top: -90px;
     right: -10px;
     display: inline-block;
-    filter: drop-shadow(0 4px 14px rgba(13,27,42,0.22));
+    filter: drop-shadow(0 4px 14px rgba(13,27,42,0.20));
     z-index: 10;
   }
-  .starburst-wrap svg { overflow: visible; width: 220px; height: 170px; }
+  .starburst-wrap svg { overflow: visible; width: 200px; height: 110px; }
   .starburst-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; }
   .starburst-text .wax-color { font-weight: 700; }
   .starburst-text .wax-color.purple { fill: #7b35c1; }
@@ -417,14 +417,14 @@ function renderResult(data, days) {
       const spfColors = {'spf-low':'#3aaa55','spf-moderate':'#e8a800','spf-high':'#e06000','spf-veryhigh':'#d02000','spf-extreme':'#9b00c8'};
       const spfColor = spfColors[spfClass] || '#0d1b2a';
       const starPath = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
-      spfWrap.innerHTML = `<svg viewBox="0 0 280 215" xmlns="http://www.w3.org/2000/svg">
-        <path d="${starPath}" fill="#ffe8e8" stroke="#d04040" stroke-width="2"/>
-        <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="18" fill="#0d1b2a">
-          <tspan x="140" dy="85">☀️ Stay safe!</tspan>
-          <tspan x="140" dy="17">Use</tspan>
-          <tspan x="140" dy="17" font-weight="700" fill="${spfColor}">${spfText}</tspan>
-          <tspan x="140" dy="17">sun protection</tspan>
-          <tspan x="140" dy="17">today!</tspan>
+      spfWrap.innerHTML = `<svg viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="256" height="96" rx="18" ry="18" fill="#ffe8e8" stroke="#d04040" stroke-width="2.5"/>
+        <polygon points="30,98 18,128 60,98" fill="#ffe8e8" stroke="#d04040" stroke-width="2.5" stroke-linejoin="round"/>
+        <polygon points="31,98 19,124 59,98" fill="#ffe8e8" stroke="none"/>
+        <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="17" fill="#0d1b2a">
+          <tspan x="130" dy="28">☀️ Stay safe! Use</tspan>
+          <tspan x="130" dy="22"><tspan font-weight="700" fill="${spfColor}">${spfText}</tspan> sun protection</tspan>
+          <tspan x="130" dy="22">today!</tspan>
         </text>
       </svg>`;
       el.querySelector('.verdict').appendChild(spfWrap);
@@ -447,13 +447,14 @@ function renderResult(data, days) {
     wrap.className = 'starburst-wrap';
     // starburst path: 12-point star
     const star = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
-    wrap.innerHTML = `<svg viewBox="0 0 280 215" xmlns="http://www.w3.org/2000/svg">
-      <path d="${star}" fill="#ffe8e8" stroke="#d04040" stroke-width="2"/>
-      <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="18" fill="#0d1b2a">
-        <tspan x="140" dy="88">🎿 Speed is your</tspan>
-        <tspan x="140" dy="17">friend! Use</tspan>
-        <tspan x="140" dy="17" font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} ski wax</tspan>
-        <tspan x="140" dy="17">today!</tspan>
+    wrap.innerHTML = `<svg viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="256" height="96" rx="18" ry="18" fill="#ffe8e8" stroke="#d04040" stroke-width="2.5"/>
+      <polygon points="30,98 18,128 60,98" fill="#ffe8e8" stroke="#d04040" stroke-width="2.5" stroke-linejoin="round"/>
+      <polygon points="31,98 19,124 59,98" fill="#ffe8e8" stroke="none"/>
+      <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="17" fill="#0d1b2a">
+        <tspan x="130" dy="28">🎿 Speed is your</tspan>
+        <tspan x="130" dy="22">friend! Use</tspan>
+        <tspan x="130" dy="22" font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} ski wax today!</tspan>
       </text>
     </svg>`;
     el.querySelector('.verdict').appendChild(wrap);
