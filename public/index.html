@@ -303,7 +303,7 @@
         <button class="mode-btn" data-mode="sun" onclick="setMode('sun', this)">Sunshine!</button>
       </div>
       <label class="checkbox-label">
-        <input type="checkbox" id="seven-days" onchange="onRangeChange()" />
+        <input type="checkbox" id="seven-days" />
         7 days ahead
       </label>
     </div>
@@ -481,6 +481,14 @@ function setLoading(on) {
 function showError(msg) { const e = document.getElementById('error'); e.textContent = msg; e.style.display = 'block'; }
 function hideError() { document.getElementById('error').style.display = 'none'; }
 document.getElementById('place').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+document.getElementById('seven-days').addEventListener('change', () => {
+  const place = document.getElementById('place').value.trim();
+  if (place) {
+    document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
+    document.getElementById('result').style.display = 'none';
+    doSearch();
+  }
+});
 
 function createSnow() {
   if (!document.body.classList.contains('bg-snow')) return;
