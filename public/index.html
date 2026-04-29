@@ -208,7 +208,7 @@
 
   @media (max-width: 600px) {
     .starburst-wrap { position: static; display: block; margin-top: 0.75rem; filter: drop-shadow(2px 3px 6px rgba(13,27,42,0.2)); }
-    .starburst-wrap svg { width: 100% !important; height: 60px !important; }
+    .starburst-wrap svg { width: 100% !important; height: auto !important; }
     header { padding: 1.2rem 1.2rem 1rem; }
     .logo { font-size: 1.6rem; }
     .tagline { font-size: 0.82rem; margin-top: 0.25rem; }
@@ -429,11 +429,11 @@ function renderResult(data, days) {
       const starPath = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
       const isMobileSPF = window.innerWidth <= 600;
       spfWrap.innerHTML = isMobileSPF
-        ? `<svg viewBox="0 0 280 58" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4,4 L276,4 L276,46 L140,56 L4,46 Z" fill="#fdf6e3" stroke="#b8864e" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9,9 L271,9 L271,42 L140,51 L9,42 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
-            <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#0d1b2a">
-              <tspan x="140" dy="22" font-weight="700">Stay safe, use </tspan><tspan font-weight="700" fill="${spfColor}">${spfText}</tspan><tspan font-weight="700" fill="#0d1b2a"> sun screen!</tspan>
+        ? `<svg viewBox="0 0 280 44" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4,4 L276,4 L276,32 L140,42 L4,32 Z" fill="#fdf6e3" stroke="#b8864e" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9,8 L271,8 L271,29 L140,38 L9,29 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
+            <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="15" fill="#0d1b2a">
+              <tspan x="140" dy="21" font-weight="700">Stay safe, use <tspan fill="${spfColor}">${spfText}</tspan> sun screen!</tspan>
             </text>
           </svg>`
         : `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
