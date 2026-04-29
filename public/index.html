@@ -166,10 +166,10 @@
   .winner[data-mode="sun"]  .winner-badge { background: #e8a800; color: white; }
 
   .starburst-wrap {
-    margin-top: 1rem;
-    display: block;
+    margin-top: 0.75rem;
+    display: inline-block;
   }
-  .starburst-wrap svg { overflow: visible; width: 100%; height: auto; }
+  .starburst-wrap svg { overflow: visible; width: 56px; height: 43px; }
   .starburst-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; }
   .starburst-text .wax-color { font-weight: 700; }
   .starburst-text .wax-color.purple { fill: #7b35c1; }
@@ -406,14 +406,14 @@ function renderResult(data, days) {
     } else {
       spfClass = 'spf-extreme';  spfText = 'SPF 50+';
     }
-    if (spfText) {
+    if (spfText && days === 1) {
       const spfWrap = document.createElement('div');
       spfWrap.className = 'starburst-wrap';
       const spfColors = {'spf-low':'#3aaa55','spf-moderate':'#e8a800','spf-high':'#e06000','spf-veryhigh':'#d02000','spf-extreme':'#9b00c8'};
       const spfColor = spfColors[spfClass] || '#0d1b2a';
       const starPath = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
       spfWrap.innerHTML = `<svg viewBox="0 0 280 215" xmlns="http://www.w3.org/2000/svg">
-        <path d="${starPath}" fill="white" stroke="rgba(13,27,42,0.15)" stroke-width="2"/>
+        <path d="${starPath}" fill="#fff8d6" stroke="#e8c000" stroke-width="2"/>
         <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12.5" fill="#0d1b2a">
           <tspan x="140" dy="85">☀️ Stay safe!</tspan>
           <tspan x="140" dy="17">Use</tspan>
@@ -437,12 +437,13 @@ function renderResult(data, days) {
     } else {
       waxClass = 'yellow'; waxName = 'yellow';
     }
+    if (days === 1) {
     const wrap = document.createElement('div');
     wrap.className = 'starburst-wrap';
     // starburst path: 12-point star
     const star = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
     wrap.innerHTML = `<svg viewBox="0 0 280 215" xmlns="http://www.w3.org/2000/svg">
-      <path d="${star}" fill="white" stroke="rgba(13,27,42,0.15)" stroke-width="2"/>
+      <path d="${star}" fill="#d8eef8" stroke="#1a5fa8" stroke-width="2"/>
       <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12.5" fill="#0d1b2a">
         <tspan x="140" dy="88">🎿 Speed is your</tspan>
         <tspan x="140" dy="17">friend! Use</tspan>
@@ -451,6 +452,7 @@ function renderResult(data, days) {
       </text>
     </svg>`;
     el.appendChild(wrap);
+    } // end days===1
   }
 
   el.style.display = 'block';
