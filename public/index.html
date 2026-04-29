@@ -57,6 +57,7 @@
   .tagline { font-size: 1.05rem; color: var(--blue); font-weight: 500; margin-top: 0.5rem; }
 
   .app-wrap { max-width: 760px; margin: 2rem auto; padding: 0 1.5rem 3rem; }
+  .tagline-bottom { max-width: 760px; margin: 1rem auto 0; padding: 0 1.5rem; font-size: 0.9rem; color: rgba(255,255,255,0.75); font-weight: 300; text-align: center; }
 
   .app-card {
     background: rgba(255,255,255,0.86);
@@ -206,6 +207,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 600px) {
+    .starburst-wrap { top: -120px; right: -5px; }
     header { padding: 1.2rem 1.2rem 1rem; }
     .logo { font-size: 1.6rem; }
     .tagline { font-size: 0.82rem; margin-top: 0.25rem; }
@@ -283,7 +285,6 @@
 <header>
   <div class="header-inner">
     <div class="logo">The day of <span>my life!</span></div>
-    <div class="tagline">Always finds the most optimistic weather forecast for your destination.</div>
   </div>
 </header>
 
@@ -311,6 +312,7 @@
     <div class="error-msg" id="error"></div>
     <div id="result"></div>
   </div>
+  <div class="tagline-bottom">Always finds the most optimistic weather forecast for your destination.</div>
 </div>
 
 <script>
