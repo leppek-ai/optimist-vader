@@ -452,13 +452,13 @@ function renderResult(data, days) {
     const star = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
     wrap.innerHTML = `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
       <!-- sign board with pointed bottom -->
-      <path d="M4,4 L126,4 L126,96 L65,112 L4,96 Z" fill="#b8d8f0" stroke="#1a5fa8" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M4,4 L126,4 L126,96 L65,112 L4,96 Z" fill="#9dc8e8" stroke="#1a5fa8" stroke-width="2.5" stroke-linejoin="round"/>
       <!-- double border inside -->
       <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#1a5fa8" stroke-width="1" opacity="0.4"/>
       <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
-        <tspan x="65" dy="26" font-weight="700">Speed is your</tspan>
+        <tspan x="65" y="36" font-weight="700">Speed is your</tspan>
         <tspan x="65" dy="19" font-weight="700">friend, use</tspan>
-        <tspan x="65" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="400" fill="#0d1b2a">!</tspan></tspan>
+        <tspan x="65" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="700" fill="#0d1b2a">!</tspan></tspan>
       </text>
     </svg>`;
     el.querySelector('.verdict').appendChild(wrap);
