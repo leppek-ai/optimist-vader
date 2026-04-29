@@ -121,6 +121,7 @@
   .verdict {
     border-radius: var(--radius); padding: 1.2rem 1.4rem;
     margin-bottom: 1rem; border: 1.5px solid transparent;
+    position: relative;
   }
   .verdict[data-mode="snow"] { background: var(--blue-light); border-color: var(--blue-mid); }
   .verdict[data-mode="sun"]  { background: #fff8d6; border-color: #e8c000; }
@@ -166,10 +167,14 @@
   .winner[data-mode="sun"]  .winner-badge { background: #e8a800; color: white; }
 
   .starburst-wrap {
-    margin-top: 0.75rem;
+    position: absolute;
+    top: -20px;
+    right: -10px;
     display: inline-block;
+    filter: drop-shadow(0 4px 14px rgba(13,27,42,0.22));
+    z-index: 10;
   }
-  .starburst-wrap svg { overflow: visible; width: 56px; height: 43px; }
+  .starburst-wrap svg { overflow: visible; width: 160px; height: 124px; }
   .starburst-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; }
   .starburst-text .wax-color { font-weight: 700; }
   .starburst-text .wax-color.purple { fill: #7b35c1; }
@@ -414,7 +419,7 @@ function renderResult(data, days) {
       const starPath = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
       spfWrap.innerHTML = `<svg viewBox="0 0 280 215" xmlns="http://www.w3.org/2000/svg">
         <path d="${starPath}" fill="#fff8d6" stroke="#e8c000" stroke-width="2"/>
-        <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12.5" fill="#0d1b2a">
+        <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="18" fill="#0d1b2a">
           <tspan x="140" dy="85">☀️ Stay safe!</tspan>
           <tspan x="140" dy="17">Use</tspan>
           <tspan x="140" dy="17" font-weight="700" fill="${spfColor}">${spfText}</tspan>
@@ -422,7 +427,7 @@ function renderResult(data, days) {
           <tspan x="140" dy="17">today!</tspan>
         </text>
       </svg>`;
-      el.appendChild(spfWrap);
+      el.querySelector('.verdict').appendChild(spfWrap);
     }
   }
 
@@ -444,14 +449,14 @@ function renderResult(data, days) {
     const star = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
     wrap.innerHTML = `<svg viewBox="0 0 280 215" xmlns="http://www.w3.org/2000/svg">
       <path d="${star}" fill="#d8eef8" stroke="#1a5fa8" stroke-width="2"/>
-      <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12.5" fill="#0d1b2a">
+      <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="18" fill="#0d1b2a">
         <tspan x="140" dy="88">🎿 Speed is your</tspan>
         <tspan x="140" dy="17">friend! Use</tspan>
         <tspan x="140" dy="17" font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} ski wax</tspan>
         <tspan x="140" dy="17">today!</tspan>
       </text>
     </svg>`;
-    el.appendChild(wrap);
+    el.querySelector('.verdict').appendChild(wrap);
     } // end days===1
   }
 
