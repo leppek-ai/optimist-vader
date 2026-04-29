@@ -424,10 +424,10 @@ function renderResult(data, days) {
         <!-- double border inside -->
         <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
         <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
-          <tspan x="65" dy="26">☀️ Stay safe,</tspan>
-          <tspan x="65" dy="19">use </tspan>
+          <tspan x="65" dy="26" font-weight="700">Stay safe,</tspan>
+          <tspan x="65" dy="19" font-weight="700">use</tspan>
           <tspan x="65" dy="19" font-weight="700" fill="${spfColor}">${spfText}</tspan>
-          <tspan x="65" dy="19">sun screen!</tspan>
+          <tspan x="65" dy="19" font-weight="700">sun screen!</tspan>
         </text>
       </svg>`;
       el.querySelector('.verdict').appendChild(spfWrap);
@@ -456,8 +456,8 @@ function renderResult(data, days) {
       <!-- double border inside -->
       <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
       <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
-        <tspan x="65" dy="26">🎿 Speed is your</tspan>
-        <tspan x="65" dy="19">friend, use</tspan>
+        <tspan x="65" dy="26" font-weight="700">Speed is your</tspan>
+        <tspan x="65" dy="19" font-weight="700">friend, use</tspan>
         <tspan x="65" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="400" fill="#0d1b2a">!</tspan></tspan>
       </text>
     </svg>`;
