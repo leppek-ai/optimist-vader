@@ -339,12 +339,17 @@ function setMode(mode, btn) {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
   }
   document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
+  document.getElementById('result').style.display = 'none';
   if (lastData) doSearch();
 }
 
 function onRangeChange() {
   const place = document.getElementById('place').value.trim();
-  if (place) doSearch();
+  if (place) {
+    document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
+    document.getElementById('result').style.display = 'none';
+    doSearch();
+  }
 }
 
 async function doSearch() {
