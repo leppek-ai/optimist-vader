@@ -41,11 +41,11 @@ async function fetchYr(lat, lon, days) {
     maxTemp = Math.max(maxTemp, t.data.instant.details.air_temperature || -99);
     if ((t.data.instant.details.cloud_area_fraction || 100) < 30) sunHours += 1;
   }
-  return { source: 'yr.no', snow: Math.round(totalSnow * 0.1), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp) };
+  return { source: 'yr.no', snow: Math.round(totalSnow * 0.1), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp), uv: null };
 }
 
 async function fetchOpenMeteo(lat, lon, days) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max&forecast_days=${days}&timezone=auto`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max,uv_index_max&forecast_days=${days}&timezone=auto`;
   const res = await fetch(url);
   const data = await res.json();
   const d = data.daily;
@@ -55,12 +55,13 @@ async function fetchOpenMeteo(lat, lon, days) {
     rain: Math.round(d.precipitation_sum.reduce((a, b) => a + (b || 0), 0)),
     wind: Math.round(Math.max(...d.windspeed_10m_max.map(v => v || 0))),
     sun: Math.round(d.sunshine_duration.reduce((a, b) => a + (b || 0), 0) / 3600),
-    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0)))
+    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0))),
+    uv: Math.round(Math.max(...(d.uv_index_max || [0]).map(v => v || 0)))
   };
 }
 
 async function fetchOpenMeteoIcon(lat, lon, days) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max&forecast_days=${days}&timezone=auto&models=icon_seamless`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max,uv_index_max&forecast_days=${days}&timezone=auto&models=icon_seamless`;
   const res = await fetch(url);
   const data = await res.json();
   const d = data.daily;
@@ -70,12 +71,13 @@ async function fetchOpenMeteoIcon(lat, lon, days) {
     rain: Math.round(d.precipitation_sum.reduce((a, b) => a + (b || 0), 0)),
     wind: Math.round(Math.max(...d.windspeed_10m_max.map(v => v || 0))),
     sun: Math.round(d.sunshine_duration.reduce((a, b) => a + (b || 0), 0) / 3600),
-    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0)))
+    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0))),
+    uv: Math.round(Math.max(...(d.uv_index_max || [0]).map(v => v || 0)))
   };
 }
 
 async function fetchOpenMeteoGFS(lat, lon, days) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max&forecast_days=${days}&timezone=auto&models=gfs_seamless`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max,uv_index_max&forecast_days=${days}&timezone=auto&models=gfs_seamless`;
   const res = await fetch(url);
   const data = await res.json();
   const d = data.daily;
@@ -85,12 +87,13 @@ async function fetchOpenMeteoGFS(lat, lon, days) {
     rain: Math.round(d.precipitation_sum.reduce((a, b) => a + (b || 0), 0)),
     wind: Math.round(Math.max(...d.windspeed_10m_max.map(v => v || 0))),
     sun: Math.round(d.sunshine_duration.reduce((a, b) => a + (b || 0), 0) / 3600),
-    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0)))
+    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0))),
+    uv: Math.round(Math.max(...(d.uv_index_max || [0]).map(v => v || 0)))
   };
 }
 
 async function fetchOpenMeteoECMWF(lat, lon, days) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max&forecast_days=${days}&timezone=auto&models=ecmwf_ifs04`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max,uv_index_max&forecast_days=${days}&timezone=auto&models=ecmwf_ifs04`;
   const res = await fetch(url);
   const data = await res.json();
   const d = data.daily;
@@ -100,7 +103,8 @@ async function fetchOpenMeteoECMWF(lat, lon, days) {
     rain: Math.round(d.precipitation_sum.reduce((a, b) => a + (b || 0), 0)),
     wind: Math.round(Math.max(...d.windspeed_10m_max.map(v => v || 0))),
     sun: Math.round(d.sunshine_duration.reduce((a, b) => a + (b || 0), 0) / 3600),
-    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0)))
+    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0))),
+    uv: Math.round(Math.max(...(d.uv_index_max || [0]).map(v => v || 0)))
   };
 }
 
@@ -119,7 +123,7 @@ async function fetchOWM(lat, lon, days) {
     maxTemp = Math.max(maxTemp, item.main?.temp_max || 0);
     if ((item.clouds?.all || 100) < 30) sunHours += 0.5;
   }
-  return { source: 'OpenWeatherMap', snow: Math.round(totalSnow / 10), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp) };
+  return { source: 'OpenWeatherMap', snow: Math.round(totalSnow / 10), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp), uv: null };
 }
 
 async function fetchSMHI(lat, lon, days) {
@@ -139,7 +143,7 @@ async function fetchSMHI(lat, lon, days) {
       maxTemp = Math.max(maxTemp, params['t'] || -99);
       if ((params['tcc_mean'] || 8) < 3) sunHours += 0.25;
     }
-    return { source: 'SMHI', snow: Math.round(totalSnow), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp) };
+    return { source: 'SMHI', snow: Math.round(totalSnow), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp), uv: null };
   } catch { return null; }
 }
 
