@@ -168,7 +168,7 @@
 
   .starburst-wrap {
     position: absolute;
-    bottom: 82px;
+    bottom: -57px;
     right: 20px;
     display: inline-block;
     filter: drop-shadow(2px 3px 8px rgba(13,27,42,0.25));
@@ -337,6 +337,7 @@ function setMode(mode, btn) {
   document.getElementById('place').placeholder = placeholders[mode];
   if (mode !== 'snow') {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
+    document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
   }
   if (lastData) doSearch();
 }
@@ -457,7 +458,7 @@ function renderResult(data, days) {
       <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
         <tspan x="65" dy="26">🎿 Speed is your</tspan>
         <tspan x="65" dy="19">friend, use</tspan>
-        <tspan x="65" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan>!</tspan>
+        <tspan x="65" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="400" fill="#0d1b2a">!</tspan></tspan>
       </text>
     </svg>`;
     el.querySelector('.verdict').appendChild(wrap);
