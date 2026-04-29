@@ -337,8 +337,8 @@ function setMode(mode, btn) {
   document.getElementById('place').placeholder = placeholders[mode];
   if (mode !== 'snow') {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
-    document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
   }
+  document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
   if (lastData) doSearch();
 }
 
