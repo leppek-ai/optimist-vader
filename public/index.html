@@ -54,10 +54,10 @@
     color: var(--blue);
   }
   .logo span { color: var(--blue); }
-  .tagline { font-size: 1.05rem; color: var(--blue); font-weight: 500; margin-top: 0.5rem; }
+  .tagline { font-size: 1.05rem; color: var(--blue); font-weight: 400; margin-top: 1em; display: block; }
 
   .app-wrap { max-width: 760px; margin: 2rem auto; padding: 0 1.5rem 3rem; }
-  .tagline-bottom { max-width: 760px; margin: 1rem auto 0; padding: 0 1.5rem; font-size: 0.9rem; color: var(--blue); font-weight: 300; text-align: center; }
+
 
   .app-card {
     background: rgba(255,255,255,0.86);
@@ -286,6 +286,7 @@
 <header>
   <div class="header-inner">
     <div class="logo">The day of <span>my life!</span></div>
+    <div class="tagline">Always finds the most optimistic weather forecast for your destination.</div>
   </div>
 </header>
 
@@ -313,7 +314,6 @@
     <div class="error-msg" id="error"></div>
     <div id="result"></div>
   </div>
-  <div class="tagline-bottom">Always finds the most optimistic weather forecast for your destination.</div>
 </div>
 
 <script>
@@ -342,8 +342,6 @@ function setMode(mode, btn) {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
   }
   document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
-  const tbl = document.querySelector('.tagline-bottom');
-  if (tbl) tbl.style.color = mode === 'sun' ? 'white' : '';
   if (lastData) doSearch();
 }
 
