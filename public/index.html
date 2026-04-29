@@ -208,7 +208,7 @@
 
   @media (max-width: 600px) {
     .starburst-wrap { position: static; display: block; margin-top: 0.75rem; filter: drop-shadow(2px 3px 6px rgba(13,27,42,0.2)); }
-    .starburst-wrap svg { width: 100% !important; height: auto !important; }
+    .starburst-wrap svg { width: 100% !important; height: auto !important; display: block; }
     header { padding: 1.2rem 1.2rem 1rem; }
     .logo { font-size: 1.6rem; }
     .tagline { font-size: 0.82rem; margin-top: 0.25rem; }
@@ -429,11 +429,12 @@ function renderResult(data, days) {
       const starPath = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
       const isMobileSPF = window.innerWidth <= 600;
       spfWrap.innerHTML = isMobileSPF
-        ? `<svg viewBox="0 0 280 44" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4,4 L276,4 L276,32 L140,42 L4,32 Z" fill="#fdf6e3" stroke="#b8864e" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9,8 L271,8 L271,29 L140,38 L9,29 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
+        ? `<svg viewBox="0 0 280 62" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4,4 L276,4 L276,50 L140,60 L4,50 Z" fill="#fdf6e3" stroke="#b8864e" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M9,9 L271,9 L271,45 L140,54 L9,45 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
             <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="15" fill="#0d1b2a">
-              <tspan x="140" dy="21" font-weight="700">Stay safe, use <tspan fill="${spfColor}">${spfText}</tspan> sun screen!</tspan>
+              <tspan x="140" dy="23" font-weight="700">Stay safe, use</tspan>
+              <tspan x="140" dy="19"><tspan font-weight="700" fill="${spfColor}">${spfText}</tspan><tspan font-weight="700" fill="#0d1b2a"> sun screen!</tspan></tspan>
             </text>
           </svg>`
         : `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
@@ -466,17 +467,24 @@ function renderResult(data, days) {
     wrap.className = 'starburst-wrap';
     // starburst path: 12-point star
     const star = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
-    wrap.innerHTML = `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
-      <!-- sign board with pointed bottom -->
-      <path d="M4,4 L126,4 L126,96 L65,112 L4,96 Z" fill="#9dc8e8" stroke="#1a5fa8" stroke-width="2.5" stroke-linejoin="round"/>
-      <!-- double border inside -->
-      <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#1a5fa8" stroke-width="1" opacity="0.4"/>
-      <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
-        <tspan x="65" y="36" font-weight="700">Speed is your</tspan>
-        <tspan x="65" dy="19" font-weight="700">friend, use</tspan>
-        <tspan x="65" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="700" fill="#0d1b2a">!</tspan></tspan>
-      </text>
-    </svg>`;
+    wrap.innerHTML = window.innerWidth <= 600
+      ? `<svg viewBox="0 0 280 62" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4,4 L276,4 L276,50 L140,60 L4,50 Z" fill="#9dc8e8" stroke="#1a5fa8" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M9,9 L271,9 L271,45 L140,54 L9,45 Z" fill="none" stroke="#1a5fa8" stroke-width="1" opacity="0.4"/>
+          <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="15" fill="#0d1b2a">
+            <tspan x="140" dy="23" font-weight="700">Speed is your friend, use</tspan>
+            <tspan x="140" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="700" fill="#0d1b2a">!</tspan></tspan>
+          </text>
+        </svg>`
+      : `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4,4 L126,4 L126,96 L65,112 L4,96 Z" fill="#9dc8e8" stroke="#1a5fa8" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#1a5fa8" stroke-width="1" opacity="0.4"/>
+          <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
+            <tspan x="65" dy="26" font-weight="700">Speed is your</tspan>
+            <tspan x="65" dy="19" font-weight="700">friend, use</tspan>
+            <tspan x="65" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="700" fill="#0d1b2a">!</tspan></tspan>
+          </text>
+        </svg>`;
     el.querySelector('.verdict').appendChild(wrap);
     } // end days===1
   }
