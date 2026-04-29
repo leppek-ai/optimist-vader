@@ -339,7 +339,6 @@ function setMode(mode, btn) {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
   }
   document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
-  document.getElementById('result').style.display = 'none';
   if (lastData) doSearch();
 }
 
@@ -485,7 +484,6 @@ document.getElementById('seven-days').addEventListener('change', () => {
   const place = document.getElementById('place').value.trim();
   if (place) {
     document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
-    document.getElementById('result').style.display = 'none';
     doSearch();
   }
 });
