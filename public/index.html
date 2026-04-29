@@ -165,83 +165,27 @@
   .winner[data-mode="snow"] .winner-badge { background: var(--blue); color: white; }
   .winner[data-mode="sun"]  .winner-badge { background: #e8a800; color: white; }
 
-  .skiwax-bubble {
-    position: relative;
-    display: inline-block;
-    background: white;
-    border: 2px solid rgba(13,27,42,0.12);
-    border-radius: 18px;
-    padding: 0.65rem 1rem;
-    font-size: 0.88rem;
+  .starburst-wrap {
     margin-top: 1rem;
-    box-shadow: 0 2px 10px rgba(13,27,42,0.08);
+    display: block;
   }
-  .skiwax-bubble::before {
-    content: '';
-    position: absolute;
-    bottom: -13px;
-    left: 22px;
-    border-width: 13px 10px 0 10px;
-    border-style: solid;
-    border-color: rgba(13,27,42,0.12) transparent transparent transparent;
-  }
-  .skiwax-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 24px;
-    border-width: 10px 8px 0 8px;
-    border-style: solid;
-    border-color: white transparent transparent transparent;
-  }
+  .starburst-wrap svg { overflow: visible; width: 100%; height: auto; }
+  .starburst-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; }
+  .starburst-text .wax-color { font-weight: 700; }
+  .starburst-text .wax-color.purple { fill: #7b35c1; }
+  .starburst-text .wax-color.red    { fill: #e02020; }
+  .starburst-text .wax-color.yellow { fill: #c89000; }
   .skiwax-bubble .wax-color { font-weight: 700; }
   .skiwax-bubble .wax-color.purple { color: #7b35c1; }
   .skiwax-bubble .wax-color.red    { color: #e02020; }
   .skiwax-bubble .wax-color.yellow { color: #c89000; }
-  .skiwax-emoji { font-size: 1.2rem; margin-right: 0.3rem; vertical-align: middle; }
-  @media (max-width: 600px) {
-    .skiwax-bubble { font-size: 0.8rem; padding: 0.55rem 0.85rem; }
-  }
+  .spf-value.spf-low      { fill: #3aaa55; }
+  .spf-value.spf-moderate { fill: #e8a800; }
+  .spf-value.spf-high     { fill: #e06000; }
+  .spf-value.spf-veryhigh { fill: #d02000; }
+  .spf-value.spf-extreme  { fill: #9b00c8; }
 
-  .spf-bubble {
-    position: relative;
-    display: inline-block;
-    background: white;
-    border: 2px solid rgba(13,27,42,0.12);
-    border-radius: 18px;
-    padding: 0.65rem 1rem;
-    font-size: 0.88rem;
-    margin-top: 1rem;
-    box-shadow: 0 2px 10px rgba(13,27,42,0.08);
-  }
-  .spf-bubble::before {
-    content: '';
-    position: absolute;
-    bottom: -13px;
-    left: 22px;
-    border-width: 13px 10px 0 10px;
-    border-style: solid;
-    border-color: rgba(13,27,42,0.12) transparent transparent transparent;
-  }
-  .spf-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 24px;
-    border-width: 10px 8px 0 8px;
-    border-style: solid;
-    border-color: white transparent transparent transparent;
-  }
-  .spf-bubble .spf-value { font-weight: 700; }
-  .spf-bubble .spf-value.spf-low      { color: #3aaa55; }
-  .spf-bubble .spf-value.spf-moderate { color: #e8a800; }
-  .spf-bubble .spf-value.spf-high     { color: #e06000; }
-  .spf-bubble .spf-value.spf-veryhigh { color: #d02000; }
-  .spf-bubble .spf-value.spf-extreme  { color: #9b00c8; }
-  .spf-emoji { font-size: 1.2rem; margin-right: 0.3rem; vertical-align: middle; }
-  @media (max-width: 600px) {
-    .spf-bubble { font-size: 0.8rem; padding: 0.55rem 0.85rem; }
-  }
+/* spf bubble handled by starburst SVG */
 
   .error-msg {
     background: var(--red-light); border: 1.5px solid var(--red-mid);
@@ -435,7 +379,9 @@ function renderResult(data, days) {
       <div class="verdict-detail">${m.detail}</div>
       <div class="other-stats">
         <div class="stat-item"><div class="stat-val">${winner.maxTemp}°C</div><div class="stat-lbl">Max temp</div></div>
-        <div class="stat-item"><div class="stat-val">${winner.snow} cm</div><div class="stat-lbl">Snow</div></div>
+        ${currentMode === 'sun'
+          ? `<div class="stat-item"><div class="stat-val">${winner.uv ?? '–'}</div><div class="stat-lbl">UV index</div></div>`
+          : `<div class="stat-item"><div class="stat-val">${winner.snow} cm</div><div class="stat-lbl">Snow</div></div>`}
         <div class="stat-item"><div class="stat-val">${winner.sun} h</div><div class="stat-lbl">Sun</div></div>
         <div class="stat-item"><div class="stat-val">${winner.wind} m/s</div><div class="stat-lbl">Max wind</div></div>
         <div class="stat-item"><div class="stat-val">${winner.rain} mm</div><div class="stat-lbl">Rain</div></div>
@@ -461,10 +407,22 @@ function renderResult(data, days) {
       spfClass = 'spf-extreme';  spfText = 'SPF 50+';
     }
     if (spfText) {
-      const bubble = document.createElement('div');
-      bubble.className = 'spf-bubble';
-      bubble.innerHTML = `<span class="spf-emoji">☀️</span>Hey dude, use <span class="spf-value ${spfClass}">${spfText}</span> sun protection today!`;
-      el.appendChild(bubble);
+      const spfWrap = document.createElement('div');
+      spfWrap.className = 'starburst-wrap';
+      const spfColors = {'spf-low':'#3aaa55','spf-moderate':'#e8a800','spf-high':'#e06000','spf-veryhigh':'#d02000','spf-extreme':'#9b00c8'};
+      const spfColor = spfColors[spfClass] || '#0d1b2a';
+      const starPath = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
+      spfWrap.innerHTML = `<svg viewBox="0 0 280 215" xmlns="http://www.w3.org/2000/svg">
+        <path d="${starPath}" fill="white" stroke="rgba(13,27,42,0.15)" stroke-width="2"/>
+        <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12.5" fill="#0d1b2a">
+          <tspan x="140" dy="85">☀️ Stay safe!</tspan>
+          <tspan x="140" dy="17">Use</tspan>
+          <tspan x="140" dy="17" font-weight="700" fill="${spfColor}">${spfText}</tspan>
+          <tspan x="140" dy="17">sun protection</tspan>
+          <tspan x="140" dy="17">today!</tspan>
+        </text>
+      </svg>`;
+      el.appendChild(spfWrap);
     }
   }
 
@@ -479,10 +437,20 @@ function renderResult(data, days) {
     } else {
       waxClass = 'yellow'; waxName = 'yellow';
     }
-    const bubble = document.createElement('div');
-    bubble.className = 'skiwax-bubble';
-    bubble.innerHTML = `<span class="skiwax-emoji">🎿</span>Hey dude, use <span class="wax-color ${waxClass}">${waxName}</span> ski wax today!`;
-    el.appendChild(bubble);
+    const wrap = document.createElement('div');
+    wrap.className = 'starburst-wrap';
+    // starburst path: 12-point star
+    const star = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
+    wrap.innerHTML = `<svg viewBox="0 0 280 215" xmlns="http://www.w3.org/2000/svg">
+      <path d="${star}" fill="white" stroke="rgba(13,27,42,0.15)" stroke-width="2"/>
+      <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="12.5" fill="#0d1b2a">
+        <tspan x="140" dy="88">🎿 Speed is your</tspan>
+        <tspan x="140" dy="17">friend! Use</tspan>
+        <tspan x="140" dy="17" font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} ski wax</tspan>
+        <tspan x="140" dy="17">today!</tspan>
+      </text>
+    </svg>`;
+    el.appendChild(wrap);
   }
 
   el.style.display = 'block';
