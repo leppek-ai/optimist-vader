@@ -37,10 +37,10 @@
 
   header {
     background: transparent;
-    padding: 2.25rem 2rem 1.5rem;
+    padding: 2.25rem 0 1.5rem;
   }
 
-  .header-inner { max-width: 760px; margin: 0 auto; }
+  .header-inner { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
 
   .logo {
     font-size: 2.3rem;
@@ -429,8 +429,8 @@ function renderResult(data, days) {
             <path d="M4,4 L276,4 L276,50 L140,60 L4,50 Z" fill="#fdf6e3" stroke="#b8864e" stroke-width="2" stroke-linejoin="round"/>
             <path d="M9,9 L271,9 L271,45 L140,54 L9,45 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
             <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="15" fill="#0d1b2a">
-              <tspan x="140" dy="23" font-weight="700">Stay safe, use</tspan>
-              <tspan x="140" dy="19"><tspan font-weight="700" fill="${spfColor}">${spfText}</tspan><tspan font-weight="700" fill="#0d1b2a"> sun screen!</tspan></tspan>
+              <tspan x="140" dy="23" font-weight="700">Stay safe,</tspan>
+              <tspan x="140" dy="19" font-weight="700">use <tspan fill="${spfColor}">${spfText}</tspan> sun screen!</tspan>
             </text>
           </svg>`
         : `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
@@ -438,8 +438,7 @@ function renderResult(data, days) {
             <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
             <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
               <tspan x="65" dy="26" font-weight="700">Stay safe,</tspan>
-              <tspan x="65" dy="19" font-weight="700">use</tspan>
-              <tspan x="65" dy="19" font-weight="700" fill="${spfColor}">${spfText}</tspan>
+              <tspan x="65" dy="19" font-weight="700">use <tspan fill="${spfColor}">${spfText}</tspan></tspan>
               <tspan x="65" dy="19" font-weight="700">sun screen!</tspan>
             </text>
           </svg>`;
@@ -468,8 +467,8 @@ function renderResult(data, days) {
           <path d="M4,4 L276,4 L276,50 L140,60 L4,50 Z" fill="#9dc8e8" stroke="#1a5fa8" stroke-width="2" stroke-linejoin="round"/>
           <path d="M9,9 L271,9 L271,45 L140,54 L9,45 Z" fill="none" stroke="#1a5fa8" stroke-width="1" opacity="0.4"/>
           <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="15" fill="#0d1b2a">
-            <tspan x="140" dy="23" font-weight="700">Speed is your friend, use</tspan>
-            <tspan x="140" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="700" fill="#0d1b2a">!</tspan></tspan>
+            <tspan x="140" dy="23" font-weight="700">Speed is your friend,</tspan>
+            <tspan x="140" dy="19" font-weight="700">use <tspan fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName}</tspan> wax!</tspan>
           </text>
         </svg>`
       : `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
@@ -477,8 +476,8 @@ function renderResult(data, days) {
           <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#1a5fa8" stroke-width="1" opacity="0.4"/>
           <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
             <tspan x="65" dy="26" font-weight="700">Speed is your</tspan>
-            <tspan x="65" dy="19" font-weight="700">friend, use</tspan>
-            <tspan x="65" dy="19"><tspan font-weight="700" fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName} wax</tspan><tspan font-weight="700" fill="#0d1b2a">!</tspan></tspan>
+            <tspan x="65" dy="19" font-weight="700">friend,</tspan>
+            <tspan x="65" dy="19" font-weight="700">use <tspan fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName}</tspan> wax!</tspan>
           </text>
         </svg>`;
     el.querySelector('.verdict').appendChild(wrap);
