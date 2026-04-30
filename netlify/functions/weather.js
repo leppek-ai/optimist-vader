@@ -127,6 +127,8 @@ async function fetchOWM(lat, lon, days) {
 }
 
 async function fetchSMHI(lat, lon, days) {
+  // SMHI only covers Sweden (roughly lat 55-70, lon 10-25)
+  if (lat < 54.5 || lat > 70.5 || lon < 9.5 || lon > 25.5) return null;
   const url = `https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon.toFixed(4)}/lat/${lat.toFixed(4)}/data.json`;
   try {
     const res = await fetch(url);
@@ -137,16 +139,91 @@ async function fetchSMHI(lat, lon, days) {
     for (const t of (data.timeSeries?.slice(0, limit) || [])) {
       const params = {};
       for (const p of t.parameters) params[p.name] = p.values[0];
-      totalSnow += params['psnow'] || 0;
-      totalRain += params['pmean'] || 0;
+      // pcat: 0=no precip, 1=snow, 2=sleet, 3=rain, 4=freezing rain, 5=freezing drizzle
+      const precip = params['pmean'] || 0;
+      const pcat = params['pcat'] ?? 3;
+      if (pcat <= 2) totalSnow += precip; // snow or sleet counts as snow
+      totalRain += precip;
       maxWind = Math.max(maxWind, params['ws'] || 0);
-      maxTemp = Math.max(maxTemp, params['t'] || -99);
-      if ((params['tcc_mean'] || 8) < 3) sunHours += 0.25;
+      maxTemp = Math.max(maxTemp, params['t'] ?? -99);
+      // Wsymb2: 1-2 = clear sky, use for sun hours estimate
+      const wsymb = params['Wsymb2'] || 99;
+      if (wsymb <= 2) sunHours += 1;
     }
-    return { source: 'SMHI', snow: Math.round(totalSnow), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp), uv: null };
+    return {
+      source: 'SMHI',
+      snow: Math.round(totalSnow),
+      rain: Math.round(totalRain),
+      wind: Math.round(maxWind),
+      sun: Math.round(sunHours),
+      maxTemp: Math.round(maxTemp),
+      uv: null
+    };
   } catch { return null; }
 }
 
+
+async function fetchBergfex(place, lat, lon, days) {
+  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+  if (!ANTHROPIC_KEY) return null;
+
+  // Build a targeted search query for Bergfex
+  const query = `site:bergfex.com weather forecast ${place} snow sunshine temperature`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        system: `You are a weather data extractor. Search Bergfex for weather forecasts and return ONLY a JSON object with these exact fields:
+{
+  "snow": <total snowfall in cm, integer>,
+  "rain": <total precipitation in mm, integer>,
+  "wind": <max wind speed in m/s, integer>,
+  "sun": <sunshine hours, integer>,
+  "maxTemp": <max temperature in celsius, integer>,
+  "uv": null
+}
+If you cannot find data, return {"error": "not found"}.
+No explanation, no markdown, only the JSON object.`,
+        messages: [{
+          role: 'user',
+          content: `Search Bergfex for the weather forecast for ${place} (lat ${lat.toFixed(2)}, lon ${lon.toFixed(2)}) for ${days === 1 ? 'today' : 'the next 7 days'}. Extract: total snowfall (cm), precipitation (mm), max wind (m/s), sunshine hours, max temperature (°C).`
+        }]
+      })
+    });
+
+    if (!res.ok) return null;
+    const data = await res.json();
+
+    // Extract text from response (skip tool_use blocks)
+    const text = data.content
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('');
+
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    if (parsed.error) return null;
+
+    return {
+      source: 'Bergfex',
+      snow: parsed.snow ?? 0,
+      rain: parsed.rain ?? 0,
+      wind: parsed.wind ?? 0,
+      sun: parsed.sun ?? 0,
+      maxTemp: parsed.maxTemp ?? 0,
+      uv: null
+    };
+  } catch { return null; }
+}
 export const handler = async (event) => {
   const params = event.queryStringParameters || {};
   const place = params.place;
@@ -169,6 +246,7 @@ export const handler = async (event) => {
       fetchOpenMeteoECMWF(lat, lon, days),
       fetchOWM(lat, lon, days),
       fetchSMHI(lat, lon, days),
+      fetchBergfex(place, lat, lon, days),
     ]);
 
     const sources = results
