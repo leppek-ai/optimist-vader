@@ -435,9 +435,19 @@
 let currentMode = 'snow';
 let lastData = null;
 
+// XSS helper — escapes untrusted strings before inserting into HTML
+function esc(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 const modeConfig = {
-  snow: { key: 'snow', unit: 'cm', label: 'snowfall', eyebrow: 'Best snow forecast', detail: 'Source with most snowfall selected', headline: (s,v,d) => `${s} promises ${v} cm of fresh snow ${d===1?'today':'over the coming week'}` },
-  sun:  { key: 'sun',  unit: 'h',  label: 'sun hours', eyebrow: 'Most sunshine across sources', detail: 'Source with most sunshine hours selected', headline: (s,v,d) => `${s} forecasts ${v} hours of sunshine ${d===1?'today':'over the next 7 days'}` },
+  snow: { key: 'snow', unit: 'cm', label: 'snowfall', eyebrow: 'Best snow forecast', detail: 'Source with most snowfall selected', headline: (s,v,d) => `${esc(s)} promises ${esc(v)} cm of fresh snow ${d===1?'today':'over the coming week'}` },
+  sun:  { key: 'sun',  unit: 'h',  label: 'sun hours', eyebrow: 'Most sunshine across sources', detail: 'Source with most sunshine hours selected', headline: (s,v,d) => `${esc(s)} forecasts ${esc(v)} hours of sunshine ${d===1?'today':'over the next 7 days'}` },
 };
 
 function getDays() { return document.getElementById('seven-days').checked ? 7 : 1; }
@@ -460,15 +470,6 @@ function setMode(mode, btn) {
   }
   document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
   if (lastData) doSearch();
-}
-
-function onRangeChange() {
-  const place = document.getElementById('place').value.trim();
-  if (place) {
-    document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
-    document.getElementById('result').style.display = 'none';
-    doSearch();
-  }
 }
 
 async function doSearch() {
@@ -500,21 +501,21 @@ function renderResult(data, days) {
   const sourcesCount = data.sourcesCount || 1;
 
   el.innerHTML = `
-    <div class="location-title">${data.location.name}, ${data.location.country}</div>
-    <div class="location-sub">${days === 1 ? "Today's forecast" : '7-day forecast'} · ${sourcesCount} sources compared</div>
+    <div class="location-title">${esc(data.location.name)}, ${esc(data.location.country)}</div>
+    <div class="location-sub">${days === 1 ? "Today's forecast" : '7-day forecast'} · ${esc(sourcesCount)} sources compared</div>
 
-    <div class="verdict" data-mode="${currentMode}">
+    <div class="verdict" data-mode="${esc(currentMode)}">
       <div class="verdict-eyebrow">${m.eyebrow}</div>
       <div class="verdict-headline">${m.headline(winner.source, winner[m.key], days)}</div>
       <div class="verdict-detail">${m.detail}</div>
       <div class="other-stats">
-        <div class="stat-item"><div class="stat-val">${winner.maxTemp}°C</div><div class="stat-lbl">Max temp</div></div>
+        <div class="stat-item"><div class="stat-val">${esc(winner.maxTemp)}°C</div><div class="stat-lbl">Max temp</div></div>
         ${currentMode === 'sun'
-          ? `<div class="stat-item"><div class="stat-val">${winner.uv ?? '–'}</div><div class="stat-lbl">UV index</div></div>`
-          : `<div class="stat-item"><div class="stat-val">${winner.snow} cm</div><div class="stat-lbl">Snow</div></div>`}
-        <div class="stat-item"><div class="stat-val">${winner.sun} h</div><div class="stat-lbl">Sun</div></div>
-        <div class="stat-item"><div class="stat-val">${winner.wind} m/s</div><div class="stat-lbl">Max wind</div></div>
-        <div class="stat-item"><div class="stat-val">${winner.rain} mm</div><div class="stat-lbl">Rain</div></div>
+          ? `<div class="stat-item"><div class="stat-val">${esc(winner.uv ?? '–')}</div><div class="stat-lbl">UV index</div></div>`
+          : `<div class="stat-item"><div class="stat-val">${esc(winner.snow)} cm</div><div class="stat-lbl">Snow</div></div>`}
+        <div class="stat-item"><div class="stat-val">${esc(winner.sun)} h</div><div class="stat-lbl">Sun</div></div>
+        <div class="stat-item"><div class="stat-val">${esc(winner.wind)} m/s</div><div class="stat-lbl">Max wind</div></div>
+        <div class="stat-item"><div class="stat-val">${esc(winner.rain)} mm</div><div class="stat-lbl">Rain</div></div>
       </div>
     </div>
   `;
@@ -541,7 +542,6 @@ function renderResult(data, days) {
       spfWrap.className = 'starburst-wrap';
       const spfColors = {'spf-low':'#3aaa55','spf-moderate':'#e8a800','spf-high':'#e06000','spf-veryhigh':'#d02000','spf-extreme':'#9b00c8'};
       const spfColor = spfColors[spfClass] || '#0d1b2a';
-      const starPath = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
       const isMobileSPF = window.innerWidth <= 600;
       spfWrap.innerHTML = isMobileSPF
         ? `<svg viewBox="0 0 280 62" xmlns="http://www.w3.org/2000/svg">
@@ -579,8 +579,6 @@ function renderResult(data, days) {
     if (days === 1) {
     const wrap = document.createElement('div');
     wrap.className = 'starburst-wrap';
-    // starburst path: 12-point star
-    const star = "M 140,10 L 155,40 L 188,28 L 178,60 L 212,65 L 192,90 L 220,108 L 196,128 L 212,155 L 182,158 L 178,192 L 152,175 L 140,205 L 128,175 L 102,192 L 98,158 L 68,155 L 84,128 L 60,108 L 88,90 L 68,65 L 102,60 L 92,28 L 125,40 Z";
     wrap.innerHTML = window.innerWidth <= 600
       ? `<svg viewBox="0 0 280 62" xmlns="http://www.w3.org/2000/svg">
           <path d="M4,4 L276,4 L276,50 L140,60 L4,50 Z" fill="#9dc8e8" stroke="#1a5fa8" stroke-width="2" stroke-linejoin="round"/>
@@ -636,7 +634,14 @@ function createSnow() {
   document.body.appendChild(flake);
   setTimeout(() => flake.remove(), (duration + delay) * 1000);
 }
-setInterval(createSnow, 180);
+let snowInterval = setInterval(createSnow, 180);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    clearInterval(snowInterval);
+  } else {
+    snowInterval = setInterval(createSnow, 180);
+  }
+});
 
 </script>
 
