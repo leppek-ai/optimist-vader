@@ -34,9 +34,13 @@ async function fetchYr(lat, lon, days) {
   const timeseries = data.properties.timeseries.slice(0, hours);
   let totalSnow = 0, totalRain = 0, maxWind = 0, sunHours = 0, maxTemp = -99;
   for (const t of timeseries) {
-    const d = t.data.next_1_hours?.details || t.data.next_6_hours?.details || {};
-    totalSnow += d.precipitation_amount || 0;
-    totalRain += d.precipitation_amount || 0;
+    const next1h = t.data.next_1_hours;
+    const next6h = t.data.next_6_hours;
+    const d = next1h?.details || next6h?.details || {};
+    const symbolCode = (next1h?.summary?.symbol_code || next6h?.summary?.symbol_code || '').toLowerCase();
+    const precip = d.precipitation_amount || 0;
+    if (symbolCode.includes('snow') || symbolCode.includes('sleet')) totalSnow += precip;
+    totalRain += precip;
     maxWind = Math.max(maxWind, t.data.instant.details.wind_speed || 0);
     maxTemp = Math.max(maxTemp, t.data.instant.details.air_temperature || -99);
     if ((t.data.instant.details.cloud_area_fraction || 100) < 30) sunHours += 1;
@@ -179,7 +183,7 @@ async function fetchBergfex(place, lat, lon, days) {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1000,
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
         system: `You are a weather data extractor. Search Bergfex for weather forecasts and return ONLY a JSON object with these exact fields:
