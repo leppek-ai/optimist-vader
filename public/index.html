@@ -193,9 +193,7 @@
     width: 46px; height: auto; flex-shrink: 0;
     border: 1.5px solid rgba(255,255,255,0.75);
     border-radius: 13px;
-    background: rgba(255,255,255,0.72);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.82);
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.15s;
@@ -213,7 +211,6 @@
     border-radius: 13px; background: rgba(255,255,255,0.90); color: var(--ink);
     outline: none; transition: border-color 0.2s, box-shadow 0.2s;
     box-shadow: 0 1px 0 rgba(255,255,255,0.95) inset, 0 2px 8px rgba(0,0,0,0.06);
-    backdrop-filter: blur(12px);
   }
   input[type="text"]:focus { border-color: rgba(26,95,168,0.45); box-shadow: 0 1px 0 rgba(255,255,255,0.95) inset, 0 0 0 3px rgba(26,95,168,0.13), 0 2px 8px rgba(0,0,0,0.06); }
   input[type="text"]::placeholder { color: var(--ink3); }
@@ -682,21 +679,19 @@ async function useMyLocation() {
   navigator.geolocation.getCurrentPosition(async (pos) => {
     try {
       const { latitude: lat, longitude: lon } = pos.coords;
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=sv`, {
-        headers: { 'User-Agent': 'OptimistVader/1.0 contact@example.com' }
-      });
+      const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=sv`);
       const data = await res.json();
-      const city = data.address?.city || data.address?.town || data.address?.village || data.address?.municipality || data.name;
+      const city = data.city || data.locality || data.principalSubdivision;
       if (!city) throw new Error('Kunde inte identifiera orten för din position.');
       document.getElementById('place').value = city;
       doSearch();
-    } catch (err) {
-      showError(err.message || 'Något gick fel vid hämtning av position.');
+    } catch {
+      showError('Kunde inte hämta din position. Försök söka manuellt.');
     } finally {
       btn.disabled = false;
     }
   }, () => {
-    showError('Kunde inte hämta din position. Kontrollera att du tillåtit platsåtkomst.');
+    showError('Platsåtkomst nekad. Tillåt platsdelning i webbläsarens inställningar.');
     btn.disabled = false;
   }, { timeout: 8000 });
 }
