@@ -154,7 +154,10 @@
 
   body.bg-sun {
     background-color: #1a8fd1;
-    background-image: none;
+    background-image:
+      radial-gradient(140% 26% at 50% 100%, rgba(242,222,160,0.98) 0 57%, rgba(242,222,160,0) 58%),
+      linear-gradient(180deg, rgba(255,244,204,0) 0%, rgba(255,244,204,0) 72%, rgba(242,222,160,0.88) 73%, rgba(200,168,92,1) 100%),
+      linear-gradient(180deg, #1a8fd1 0%, #6abfe8 36%, #a8daf4 52%, #0e6aaa 53%, #1a8fd1 64%, #4ab0d8 74%, #69bfd8 100%);
   }
 
   body.bg-sun::before {
