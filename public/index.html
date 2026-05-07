@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<meta name="theme-color" id="theme-color-meta" content="#1a4a24" />
+<meta name="theme-color" id="theme-color-meta" content="#6aaad4" />
 <title>BestWeather</title>
 <meta name="apple-mobile-web-app-title" content="BestWeather"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -115,10 +115,10 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
-    background-color: #1a4a24;
+    background-color: #6aaad4;
   }
   html.mode-sun {
-    background-color: #c8a85c;
+    background-color: #1a8fd1;
   }
 
   :root {
@@ -132,11 +132,16 @@
     font-family: 'Plus Jakarta Sans', sans-serif;
     color: var(--ink);
     min-height: 100vh;
+    min-height: 100dvh;
+    background-repeat: no-repeat;
     background-size: cover;
     background-position: center top;
     background-attachment: fixed;
     transition: none;
     overscroll-behavior-y: none;
+  }
+  @media (pointer: coarse) {
+    body { background-attachment: scroll; }
   }
 
   body.bg-snow {
@@ -333,31 +338,58 @@
   .winner[data-mode="snow"] .winner-badge { background: var(--blue); color: white; }
   .winner[data-mode="sun"]  .winner-badge { background: #e8a800; color: white; }
 
-  .starburst-wrap {
+  .verdict-tip {
+    --accent: var(--ink);
     position: absolute;
-    top: -15px;
-    right: -15px;
-    display: inline-block;
-    filter: drop-shadow(2px 3px 8px rgba(13,27,42,0.25));
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 260px;
+    padding: 0.65rem 0.75rem;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.82);
+    border: 1px solid rgba(255,255,255,0.78);
+    backdrop-filter: blur(18px) saturate(1.6);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.65) inset, 0 10px 26px rgba(0,0,0,0.12);
     z-index: 10;
+    pointer-events: none;
   }
-  .starburst-wrap svg { overflow: visible; width: 130px; height: 115px; }
-  .starburst-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; }
-  .starburst-text .wax-color { font-weight: 700; }
-  .starburst-text .wax-color.purple { fill: #7b35c1; }
-  .starburst-text .wax-color.red    { fill: #e02020; }
-  .starburst-text .wax-color.yellow { fill: #c89000; }
-  .skiwax-bubble .wax-color { font-weight: 700; }
-  .skiwax-bubble .wax-color.purple { color: #7b35c1; }
-  .skiwax-bubble .wax-color.red    { color: #e02020; }
-  .skiwax-bubble .wax-color.yellow { color: #c89000; }
-  .spf-value.spf-low      { fill: #3aaa55; }
-  .spf-value.spf-moderate { fill: #e8a800; }
-  .spf-value.spf-high     { fill: #e06000; }
-  .spf-value.spf-veryhigh { fill: #d02000; }
-  .spf-value.spf-extreme  { fill: #9b00c8; }
+  .verdict[data-mode="snow"] .verdict-tip { border-color: rgba(26,95,168,0.22); }
+  .verdict[data-mode="sun"]  .verdict-tip { border-color: rgba(232,168,0,0.24); }
 
-/* spf bubble handled by starburst SVG */
+  .verdict-tip__icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex: 0 0 auto;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 22px rgba(0,0,0,0.14);
+  }
+  .verdict[data-mode="snow"] .verdict-tip__icon { background: linear-gradient(180deg, rgba(26,95,168,0.95) 0%, rgba(26,95,168,0.78) 100%); }
+  .verdict[data-mode="sun"]  .verdict-tip__icon { background: linear-gradient(180deg, rgba(232,168,0,0.95) 0%, rgba(176,120,0,0.88) 100%); }
+  .verdict-tip__icon svg { width: 16px; height: 16px; }
+
+  .verdict-tip__kicker {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(13,27,42,0.58);
+    margin-bottom: 1px;
+  }
+  .verdict-tip__text {
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--ink);
+  }
+  .verdict-tip__accent { color: var(--accent); font-weight: 800; }
 
   .error-msg {
     background: var(--red-light); border: 1.5px solid var(--red-mid);
@@ -373,8 +405,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
 
   @media (max-width: 600px) {
-    .starburst-wrap { position: static; display: block; margin-top: 0.75rem; filter: drop-shadow(2px 3px 6px rgba(13,27,42,0.2)); }
-    .starburst-wrap svg { width: 100% !important; height: auto !important; display: block; }
+    .verdict-tip { position: static; width: 100%; max-width: none; margin-top: 0.75rem; pointer-events: none; }
     header { padding: 1.2rem 0 1rem; background: transparent; }
     .header-inner { padding: 0 0.9rem; }
     .logo { font-size: 1.6rem; color: white; }
@@ -522,12 +553,12 @@ function setMode(mode, btn) {
   btn.classList.add('active');
   document.body.className = mode === 'snow' ? 'bg-snow' : 'bg-sun';
   document.documentElement.className = mode === 'sun' ? 'mode-sun' : '';
-  document.getElementById('theme-color-meta').setAttribute('content', mode === 'snow' ? '#1a4a24' : '#c8a85c');
+  document.getElementById('theme-color-meta').setAttribute('content', mode === 'snow' ? '#6aaad4' : '#1a8fd1');
   document.getElementById('place').placeholder = placeholders[mode];
   if (mode !== 'snow') {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
   }
-  document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
+  document.querySelectorAll('.verdict-tip').forEach(s => s.remove());
   if (lastData) doSearch();
 }
 
@@ -597,30 +628,26 @@ function renderResult(data, days) {
       spfClass = 'spf-extreme';  spfText = 'SPF 50+';
     }
     if (spfText && days === 1) {
-      const spfWrap = document.createElement('div');
-      spfWrap.className = 'starburst-wrap';
       const spfColors = {'spf-low':'#3aaa55','spf-moderate':'#e8a800','spf-high':'#e06000','spf-veryhigh':'#d02000','spf-extreme':'#9b00c8'};
       const spfColor = spfColors[spfClass] || '#0d1b2a';
-      const isMobileSPF = window.innerWidth <= 600;
-      spfWrap.innerHTML = isMobileSPF
-        ? `<svg viewBox="0 0 280 62" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4,4 L276,4 L276,50 L140,60 L4,50 Z" fill="#fdf6e3" stroke="#b8864e" stroke-width="2" stroke-linejoin="round"/>
-            <path d="M9,9 L271,9 L271,45 L140,54 L9,45 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
-            <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="15" fill="#0d1b2a">
-              <tspan x="140" dy="23" font-weight="700">Stay safe,</tspan>
-              <tspan x="140" dy="19" font-weight="700">use <tspan fill="${spfColor}">${spfText}</tspan> sun screen!</tspan>
-            </text>
-          </svg>`
-        : `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4,4 L126,4 L126,96 L65,112 L4,96 Z" fill="#fdf6e3" stroke="#b8864e" stroke-width="2.5" stroke-linejoin="round"/>
-            <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#b8864e" stroke-width="1" opacity="0.4"/>
-            <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
-              <tspan x="65" dy="26" font-weight="700">Stay safe,</tspan>
-              <tspan x="65" dy="19" font-weight="700">use <tspan fill="${spfColor}">${spfText}</tspan></tspan>
-              <tspan x="65" dy="19" font-weight="700">sun screen!</tspan>
-            </text>
-          </svg>`;
-      el.querySelector('.verdict').appendChild(spfWrap);
+      const tip = document.createElement('div');
+      tip.className = 'verdict-tip';
+      tip.style.setProperty('--accent', spfColor);
+      tip.setAttribute('role', 'note');
+      tip.setAttribute('aria-label', `Sunscreen tip: ${spfText}`);
+      tip.innerHTML = `
+        <div class="verdict-tip__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+        </div>
+        <div>
+          <div class="verdict-tip__kicker">Sunscreen</div>
+          <div class="verdict-tip__text">Recommended: <span class="verdict-tip__accent">${esc(spfText)}</span></div>
+        </div>
+      `;
+      el.querySelector('.verdict').appendChild(tip);
     }
   }
 
@@ -636,27 +663,36 @@ function renderResult(data, days) {
       waxClass = 'yellow'; waxName = 'yellow';
     }
     if (days === 1) {
-    const wrap = document.createElement('div');
-    wrap.className = 'starburst-wrap';
-    wrap.innerHTML = window.innerWidth <= 600
-      ? `<svg viewBox="0 0 280 62" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4,4 L276,4 L276,50 L140,60 L4,50 Z" fill="#9dc8e8" stroke="#1a5fa8" stroke-width="2" stroke-linejoin="round"/>
-          <path d="M9,9 L271,9 L271,45 L140,54 L9,45 Z" fill="none" stroke="#1a5fa8" stroke-width="1" opacity="0.4"/>
-          <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="15" fill="#0d1b2a">
-            <tspan x="140" dy="23" font-weight="700">Speed is your friend,</tspan>
-            <tspan x="140" dy="19" font-weight="700">use <tspan fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName}</tspan> wax!</tspan>
-          </text>
-        </svg>`
-      : `<svg viewBox="0 0 130 115" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4,4 L126,4 L126,96 L65,112 L4,96 Z" fill="#9dc8e8" stroke="#1a5fa8" stroke-width="2.5" stroke-linejoin="round"/>
-          <path d="M10,10 L120,10 L120,90 L65,104 L10,90 Z" fill="none" stroke="#1a5fa8" stroke-width="1" opacity="0.4"/>
-          <text text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="14" fill="#0d1b2a">
-            <tspan x="65" dy="26" font-weight="700">Speed is your</tspan>
-            <tspan x="65" dy="19" font-weight="700">friend,</tspan>
-            <tspan x="65" dy="19" font-weight="700">use <tspan fill="${waxClass === 'purple' ? '#7b35c1' : waxClass === 'red' ? '#e02020' : '#c89000'}">${waxName}</tspan> wax!</tspan>
-          </text>
-        </svg>`;
-    el.querySelector('.verdict').appendChild(wrap);
+      const waxColors = { purple: '#7b35c1', red: '#e02020', yellow: '#c89000' };
+      const waxColor = waxColors[waxClass] || '#0d1b2a';
+      const tip = document.createElement('div');
+      tip.className = 'verdict-tip';
+      tip.style.setProperty('--accent', waxColor);
+      tip.setAttribute('role', 'note');
+      tip.setAttribute('aria-label', `Wax tip: ${waxName}`);
+      tip.innerHTML = `
+        <div class="verdict-tip__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m10 20-1.25-2.5L6 18" />
+            <path d="M10 4 8.75 6.5 6 6" />
+            <path d="m14 20 1.25-2.5L18 18" />
+            <path d="m14 4 1.25 2.5L18 6" />
+            <path d="m17 21-3-6h-4" />
+            <path d="m17 3-3 6 1.5 3" />
+            <path d="M2 12h6.5L10 9" />
+            <path d="m20 10-1.5 2 1.5 2" />
+            <path d="M22 12h-6.5L14 15" />
+            <path d="m4 10 1.5 2L4 14" />
+            <path d="m7 21 3-6-1.5-3" />
+            <path d="m7 3 3 6h4" />
+          </svg>
+        </div>
+        <div>
+          <div class="verdict-tip__kicker">Ski wax</div>
+          <div class="verdict-tip__text">Use <span class="verdict-tip__accent">${esc(waxName)}</span> wax</div>
+        </div>
+      `;
+      el.querySelector('.verdict').appendChild(tip);
     } // end days===1
   }
 
@@ -698,7 +734,7 @@ async function useMyLocation() {
 document.getElementById('seven-days').addEventListener('change', () => {
   const place = document.getElementById('place').value.trim();
   if (place) {
-    document.querySelectorAll('.starburst-wrap').forEach(s => s.remove());
+    document.querySelectorAll('.verdict-tip').forEach(s => s.remove());
     doSearch();
   }
 });
@@ -747,5 +783,4 @@ document.addEventListener('visibilitychange', () => {
 </div>
 </body>
 </html>
-
 
