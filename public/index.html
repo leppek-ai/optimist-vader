@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<meta name="theme-color" id="theme-color-meta" content="#6aaad4" />
+<meta name="theme-color" id="theme-color-meta" content="#1a4a24" />
 <title>BestWeather</title>
 <meta name="apple-mobile-web-app-title" content="BestWeather"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -115,10 +115,12 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
-    background-color: #6aaad4;
+    background-color: #1a4a24;
+    min-height: 100%;
+    overscroll-behavior-y: none;
   }
   html.mode-sun {
-    background-color: #1a8fd1;
+    background-color: #c8a85c;
   }
 
   :root {
@@ -139,9 +141,53 @@
     background-attachment: fixed;
     transition: none;
     overscroll-behavior-y: none;
+    overflow-x: hidden;
   }
   @media (pointer: coarse) {
     body { background-attachment: scroll; }
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 18vh;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body.bg-snow::after {
+    background: linear-gradient(180deg, rgba(26,74,36,0) 0%, rgba(26,74,36,0.12) 34%, rgba(26,74,36,0.48) 68%, rgba(26,74,36,0.72) 100%);
+  }
+  body.bg-snow::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 22vh;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(120% 95% at 50% 100%, rgba(255,255,255,0.92) 0%, rgba(236,247,252,0.92) 38%, rgba(210,232,244,0.78) 62%, rgba(210,232,244,0) 78%),
+      linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(236,247,252,0.55) 26%, rgba(221,239,248,0.88) 64%, rgba(205,228,241,0.96) 100%);
+  }
+  body.bg-sun::after {
+    background: linear-gradient(180deg, rgba(200,168,92,0) 0%, rgba(214,182,104,0.18) 30%, rgba(206,173,96,0.46) 66%, rgba(200,168,92,0.78) 100%);
+  }
+  body.bg-sun::before {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 24vh;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(130% 90% at 50% 100%, rgba(255,247,218,0.94) 0%, rgba(244,229,176,0.88) 34%, rgba(232,203,126,0.48) 56%, rgba(232,203,126,0) 72%),
+      linear-gradient(180deg, rgba(255,245,208,0) 0%, rgba(255,245,208,0.52) 16%, rgba(246,226,168,0.9) 34%, rgba(228,197,118,0.98) 68%, rgba(200,168,92,1) 100%);
   }
 
   body.bg-snow {
@@ -406,13 +452,22 @@
 
   @media (max-width: 600px) {
     .verdict-tip { position: static; width: 100%; max-width: none; margin-top: 0.75rem; pointer-events: none; }
-    header { padding: 1.2rem 0 1rem; background: transparent; }
-    .header-inner { padding: 0 0.9rem; }
-    .logo { font-size: 1.6rem; color: white; }
-    .tagline { font-size: 0.82rem; margin-top: 0.25rem; color: rgba(255,255,255,0.85); }
-    .app-wrap { margin: 0.75rem auto; padding: 0 0.9rem 1.5rem; }
-    .app-card { padding: 1.1rem; border-radius: 16px; }
+    header { padding: calc(0.95rem + env(safe-area-inset-top, 0px)) 0 0.85rem; background: transparent; }
+    .header-inner { padding: 0 1rem; }
+    .logo { font-size: clamp(1.72rem, 8vw, 1.95rem); letter-spacing: -0.05em; line-height: 0.96; color: white; max-width: 11ch; }
+    .tagline { font-size: 0.82rem; line-height: 1.35; margin-top: 0.4rem; color: rgba(255,255,255,0.86); max-width: 28ch; }
+    .app-wrap { margin: 0.45rem auto 0; padding: 0 0.95rem calc(1.8rem + env(safe-area-inset-bottom, 0px)); }
+    .app-card {
+      padding: 1.12rem;
+      border-radius: 20px;
+      border-top-color: rgba(255,255,255,0.98);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.58) inset,
+        0 8px 24px rgba(13,27,42,0.08),
+        0 22px 52px rgba(13,27,42,0.14);
+    }
     .search-block { gap: 8px; margin-bottom: 0.9rem; }
+    .controls-row { gap: 8px; align-items: center; }
     input[type="text"] { font-size: 0.9rem; padding: 0.7rem 0.85rem; }
     button.loc-btn { width: 40px; border-radius: 11px; }
     button.search-btn { padding: 0.7rem 1.1rem; font-size: 0.88rem; min-width: 70px; }
@@ -427,6 +482,14 @@
     .other-stats { gap: 4px; margin-top: 0.8rem; padding-top: 0.8rem; grid-template-columns: repeat(5, 1fr); }
     .stat-val { font-size: 0.88rem; }
     .stat-lbl { font-size: 0.6rem; }
+  }
+  @media (max-width: 820px) and (pointer: coarse) {
+    body.bg-sun .wave-svg { left: -24px; width: calc(100% + 48px); }
+    body.bg-sun .wave-svg.w1 { top: 58vh; }
+    body.bg-sun .wave-svg.w2 { top: 61vh; }
+    body.bg-sun .wave-svg.w3 { top: 64vh; }
+    body.bg-sun .wave-svg.w4 { top: 67vh; }
+    body.bg-sun .wave-svg.w5 { top: 70vh; }
   }
 
 
@@ -553,7 +616,7 @@ function setMode(mode, btn) {
   btn.classList.add('active');
   document.body.className = mode === 'snow' ? 'bg-snow' : 'bg-sun';
   document.documentElement.className = mode === 'sun' ? 'mode-sun' : '';
-  document.getElementById('theme-color-meta').setAttribute('content', mode === 'snow' ? '#6aaad4' : '#1a8fd1');
+  document.getElementById('theme-color-meta').setAttribute('content', mode === 'snow' ? '#1a4a24' : '#c8a85c');
   document.getElementById('place').placeholder = placeholders[mode];
   if (mode !== 'snow') {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
@@ -783,4 +846,3 @@ document.addEventListener('visibilitychange', () => {
 </div>
 </body>
 </html>
-
