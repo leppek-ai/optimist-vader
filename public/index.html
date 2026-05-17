@@ -566,11 +566,15 @@
 <div class="app-wrap">
   <div class="app-card">
     <div class="search-block">
-      <input type="text" id="place" placeholder="Destination, e.g. Åre, Chamonix, Zermatt..." autocomplete="off" />
+      <input type="text" id="place" placeholder="e.g. Bydalen, Åre..." autocomplete="off" />
       <button class="loc-btn" onclick="useMyLocation()" id="loc-btn" title="Use my location">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e02020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <circle cx="12" cy="12" r="4"/>
+          <line x1="12" y1="2" x2="12" y2="7"/>
+          <line x1="12" y1="17" x2="12" y2="22"/>
+          <line x1="2" y1="12" x2="7" y2="12"/>
+          <line x1="17" y1="12" x2="22" y2="12"/>
         </svg>
       </button>
       <button class="search-btn" onclick="doSearch()" id="search-btn">
@@ -617,8 +621,8 @@ const modeConfig = {
 function getDays() { return document.getElementById('seven-days').checked ? 7 : 1; }
 
 const placeholders = {
-  snow: 'Destination, e.g. Åre, Chamonix, Zermatt...',
-  sun:  'Destination, e.g. Tucepi, Marbella, Santorini...'
+  snow: 'e.g. Bydalen, Åre...',
+  sun:  'e.g. Tucepi, Marbella...'
 };
 
 function setMode(mode, btn) {
