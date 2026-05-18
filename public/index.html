@@ -13,7 +13,7 @@
 <link id="favicon" rel="icon" type="image/png" sizes="32x32" />
 <script>
 (function(){
-  const sz = 180, r = 40;
+  const sz = 180, r = 40, half = sz / 2;
   const c = document.createElement('canvas');
   c.width = c.height = sz;
   const ctx = c.getContext('2d');
@@ -26,88 +26,77 @@
   ctx.lineTo(0,r); ctx.quadraticCurveTo(0,0,r,0);
   ctx.closePath(); ctx.clip();
 
-  // Sky
-  ctx.fillStyle='#3d8fc0'; ctx.fillRect(0,0,sz,sz);
+  // Left half — deep sky blue gradient
+  const gL = ctx.createLinearGradient(0, 0, 0, sz);
+  gL.addColorStop(0, '#2fb8f0');
+  gL.addColorStop(1, '#1460b0');
+  ctx.fillStyle = gL;
+  ctx.fillRect(0, 0, half, sz);
 
-  // Distant mountains
-  ctx.fillStyle='rgba(90,170,212,0.45)';
-  ctx.beginPath();
-  ctx.moveTo(0,170); ctx.lineTo(20,128); ctx.lineTo(36,142); ctx.lineTo(54,108);
-  ctx.lineTo(72,133); ctx.lineTo(90,105); ctx.lineTo(108,126); ctx.lineTo(126,110);
-  ctx.lineTo(144,128); ctx.lineTo(162,112); ctx.lineTo(180,130); ctx.lineTo(180,170);
-  ctx.closePath(); ctx.fill();
+  // Right half — warm golden gradient
+  const gR = ctx.createLinearGradient(0, 0, 0, sz);
+  gR.addColorStop(0, '#ffd84a');
+  gR.addColorStop(1, '#f08018');
+  ctx.fillStyle = gR;
+  ctx.fillRect(half, 0, half, sz);
 
-  // Near peaks
-  ctx.fillStyle='#daeef8';
-  ctx.beginPath();
-  ctx.moveTo(0,180);
-  ctx.lineTo(10,148); ctx.lineTo(20,162); ctx.lineTo(30,128); ctx.lineTo(42,154);
-  ctx.lineTo(54,112); ctx.lineTo(65,148); ctx.lineTo(78,96); ctx.lineTo(90,140);
-  ctx.lineTo(102,116); ctx.lineTo(114,148); ctx.lineTo(126,122); ctx.lineTo(138,148);
-  ctx.lineTo(150,126); ctx.lineTo(162,150); ctx.lineTo(174,130); ctx.lineTo(180,145);
-  ctx.lineTo(180,180);
-  ctx.closePath(); ctx.fill();
-
-  // Ground
-  ctx.fillStyle='rgba(255,255,255,0.85)';
-  ctx.fillRect(0,168,180,12);
-
-  // Sun
-  ctx.save(); ctx.translate(142,38);
-  ctx.strokeStyle='#ffd000'; ctx.lineWidth=2; ctx.lineCap='round';
-  for(let i=0;i<8;i++){
-    const a=i*Math.PI/4;
-    ctx.beginPath(); ctx.moveTo(Math.cos(a)*16,Math.sin(a)*16); ctx.lineTo(Math.cos(a)*23,Math.sin(a)*23); ctx.stroke();
-  }
-  ctx.fillStyle='#ffe033'; ctx.beginPath(); ctx.arc(0,0,13,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle='#fff5a0'; ctx.beginPath(); ctx.arc(-2,-2,8,0,Math.PI*2); ctx.fill();
+  // Divider line
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(half, 0); ctx.lineTo(half, sz); ctx.stroke();
   ctx.restore();
 
-  // Snowflake drawing function — matches reference style
-  function drawFlake(cx, cy, size, alpha=1) {
+  // Snowflake — clipped to left half
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, 0, half, sz); ctx.clip();
+  ctx.translate(half / 2, half);
+  ctx.strokeStyle = 'rgba(255,255,255,0.96)';
+  ctx.lineCap = 'round';
+  const fs = 35;
+  for (let i = 0; i < 6; i++) {
     ctx.save();
-    ctx.translate(cx, cy);
-    ctx.globalAlpha = alpha;
-    ctx.strokeStyle = 'white';
-    ctx.lineCap = 'round';
-    for(let i=0; i<6; i++){
-      ctx.save();
-      ctx.rotate(i * Math.PI/3);
-      ctx.lineWidth = size * 0.09;
-      // Main arm
-      ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-size); ctx.stroke();
-      // Inner branches at 35%
-      const b1 = size*0.35;
-      ctx.lineWidth = size * 0.07;
-      ctx.beginPath(); ctx.moveTo(0,-b1); ctx.lineTo(-size*0.14,-b1-size*0.14); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0,-b1); ctx.lineTo( size*0.14,-b1-size*0.14); ctx.stroke();
-      // Outer branches at 65%
-      const b2 = size*0.65;
-      ctx.beginPath(); ctx.moveTo(0,-b2); ctx.lineTo(-size*0.13,-b2-size*0.13); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0,-b2); ctx.lineTo( size*0.13,-b2-size*0.13); ctx.stroke();
-      // Tip fork at 88%
-      const b3 = size*0.88;
-      ctx.lineWidth = size*0.06;
-      ctx.beginPath(); ctx.moveTo(0,-b3); ctx.lineTo(-size*0.08,-b3-size*0.08); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(0,-b3); ctx.lineTo( size*0.08,-b3-size*0.08); ctx.stroke();
-      ctx.restore();
-    }
-    // Center dot
-    ctx.fillStyle='white'; ctx.beginPath(); ctx.arc(0,0,size*0.09,0,Math.PI*2); ctx.fill();
+    ctx.rotate(i * Math.PI / 3);
+    ctx.lineWidth = fs * 0.10;
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -fs); ctx.stroke();
+    ctx.lineWidth = fs * 0.08;
+    [[0.38, 0.21], [0.68, 0.17]].forEach(([pos, wing]) => {
+      const d = fs * pos, w = fs * wing;
+      ctx.beginPath(); ctx.moveTo(0, -d); ctx.lineTo(-w, -d - w); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, -d); ctx.lineTo( w, -d - w); ctx.stroke();
+    });
     ctx.restore();
   }
+  ctx.fillStyle = 'white';
+  ctx.beginPath(); ctx.arc(0, 0, fs * 0.11, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
 
-  drawFlake(48, 112, 26);
-  drawFlake(95, 76, 16, 0.9);
-  drawFlake(122, 100, 11, 0.75);
-  drawFlake(22, 72, 7, 0.7);
-  drawFlake(155, 88, 7, 0.65);
+  // Sun — clipped to right half
+  ctx.save();
+  ctx.beginPath(); ctx.rect(half, 0, half, sz); ctx.clip();
+  ctx.translate(half + half / 2, half);
+  const sr = 21;
+  ctx.strokeStyle = 'rgba(255,255,255,0.88)';
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  for (let i = 0; i < 8; i++) {
+    const a = i * Math.PI / 4;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a) * (sr + 6), Math.sin(a) * (sr + 6));
+    ctx.lineTo(Math.cos(a) * (sr + 16), Math.sin(a) * (sr + 16));
+    ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.beginPath(); ctx.arc(0, 0, sr, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#ffc020';
+  ctx.beginPath(); ctx.arc(0, 0, sr - 5, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
 
   const url = c.toDataURL('image/png');
   document.getElementById('apple-touch-icon').href = url;
   const f = document.createElement('canvas');
   f.width = f.height = 32;
-  f.getContext('2d').drawImage(c,0,0,32,32);
+  f.getContext('2d').drawImage(c, 0, 0, 32, 32);
   document.getElementById('favicon').href = f.toDataURL('image/png');
 })();
 </script>
