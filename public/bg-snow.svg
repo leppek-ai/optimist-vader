@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#6aaad4"/>
+    <stop offset="0.5" stop-color="#a8cfe8"/>
+    <stop offset="1" stop-color="#d8eef8"/>
+  </linearGradient>
+  <linearGradient id="mfar" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#c8dff0"/>
+    <stop offset="1" stop-color="#b0cce4"/>
+  </linearGradient>
+  <linearGradient id="mmid" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#e8f4fc"/>
+    <stop offset="1" stop-color="#c4ddf0"/>
+  </linearGradient>
+  <linearGradient id="mnear" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#f5fbff"/>
+    <stop offset="1" stop-color="#daeef8"/>
+  </linearGradient>
+  <linearGradient id="shadow1" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#b0cce4" stop-opacity="0.6"/>
+    <stop offset="1" stop-color="#b0cce4" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="shadow2" x1="1" y1="0" x2="0" y2="0">
+    <stop offset="0" stop-color="#9ab8d4" stop-opacity="0.5"/>
+    <stop offset="1" stop-color="#9ab8d4" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="forest" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2d6e3a"/>
+    <stop offset="1" stop-color="#1a4a24"/>
+  </linearGradient>
+</defs>
+
+<!-- Sky -->
+<rect width="1400" height="900" fill="url(#sky)"/>
+
+<!-- Far mountains -->
+<polygon points="0,820 120,620 220,700 310,560 420,720 520,590 620,760 700,610 800,780 900,560 1000,720 1100,580 1200,740 1300,600 1400,700 1400,850 0,850" fill="url(#mfar)" opacity="0.5"/>
+
+<!-- Mid mountains -->
+<polygon points="0,840 80,660 160,730 260,570 370,730 460,600 560,760 660,540 760,710 860,570 960,730 1060,580 1160,740 1260,600 1360,720 1400,680 1400,860 0,860" fill="url(#mmid)" opacity="0.7"/>
+
+<!-- Near mountains -->
+<polygon points="0,900 100,640 180,710 270,620 350,750 430,580 520,700 590,650 660,900 0,900" fill="url(#mnear)"/>
+<polygon points="430,580 520,700 590,650 490,575" fill="url(#shadow1)" opacity="0.4"/>
+<polygon points="440,900 560,680 620,620 680,700 760,480 840,640 900,570 970,760 1020,900" fill="url(#mnear)"/>
+<polygon points="760,480 840,640 900,570 800,475" fill="url(#shadow2)" opacity="0.35"/>
+<polygon points="880,900 980,600 1040,690 1100,570 1180,700 1240,610 1310,760 1370,640 1400,720 1400,900" fill="url(#mnear)"/>
+<polygon points="1100,570 1180,700 1240,610 1150,565" fill="url(#shadow1)" opacity="0.35"/>
+
+<!-- Forest belt -->
+<polygon points="0,900 0,830 60,812 130,828 200,808 270,824 340,806 410,822 480,804 550,820 620,802 670,818 670,900" fill="url(#forest)"/>
+<polygon points="650,900 650,818 720,802 790,818 860,800 930,816 1000,798 1070,814 1140,798 1210,814 1280,800 1340,816 1400,802 1400,900" fill="url(#forest)"/>
+
+<!-- Clouds -->
+<ellipse cx="180" cy="80" rx="55" ry="55" fill="white" opacity="0.55"/>
+<ellipse cx="130" cy="93" rx="38" ry="38" fill="white" opacity="0.5"/>
+<ellipse cx="235" cy="90" rx="40" ry="40" fill="white" opacity="0.5"/>
+<ellipse cx="950" cy="65" rx="60" ry="60" fill="white" opacity="0.45"/>
+<ellipse cx="895" cy="80" rx="42" ry="42" fill="white" opacity="0.4"/>
+<ellipse cx="1008" cy="77" rx="45" ry="45" fill="white" opacity="0.42"/>
+<ellipse cx="570" cy="110" rx="35" ry="35" fill="white" opacity="0.3"/>
+<ellipse cx="610" cy="102" rx="28" ry="28" fill="white" opacity="0.28"/>
+
+<!-- Snow ridgelines on peaks -->
+<polyline points="620,622 680,700 760,480" stroke="white" stroke-width="3" fill="none" opacity="0.5"/>
+<polyline points="760,480 840,640 900,570" stroke="white" stroke-width="2.5" fill="none" opacity="0.45"/>
+<polyline points="430,582 520,700 590,652" stroke="white" stroke-width="2" fill="none" opacity="0.4"/>
+<polyline points="1100,572 1180,700 1240,612" stroke="white" stroke-width="2" fill="none" opacity="0.4"/>
+<polyline points="980,602 1040,690 1100,572" stroke="white" stroke-width="2" fill="none" opacity="0.35"/>
+</svg>
