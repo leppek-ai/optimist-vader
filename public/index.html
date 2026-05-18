@@ -630,6 +630,9 @@ async function doSearch(preserveCache = false) {
   const place = document.getElementById('place').value.trim();
   if (!place) return;
   if (!preserveCache) dataCache = {};
+  const resultEl = document.getElementById('result');
+  resultEl.style.display = 'none';
+  resultEl.innerHTML = '';
   setLoading(true);
   hideError();
   try {
