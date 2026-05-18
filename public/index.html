@@ -207,8 +207,8 @@
 
   .app-card {
     background: linear-gradient(160deg, rgba(255,255,255,0.90) 0%, rgba(255,255,255,0.70) 100%);
-    backdrop-filter: blur(44px) saturate(1.7);
-    -webkit-backdrop-filter: blur(44px) saturate(1.7);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
     border-radius: 24px;
     border: 1px solid rgba(255,255,255,0.75);
     border-top-color: rgba(255,255,255,0.95);
@@ -584,7 +584,7 @@
 
 <script>
 let currentMode = 'snow';
-let lastData = null;
+let dataCache = {};
 
 // XSS helper — escapes untrusted strings before inserting into HTML
 function esc(str) {
@@ -620,13 +620,17 @@ function setMode(mode, btn) {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
   }
   document.querySelectorAll('.verdict-tip').forEach(s => s.remove());
-  if (lastData) doSearch();
+  if (dataCache[mode]) {
+    renderResult(dataCache[mode], getDays());
+  } else if (Object.keys(dataCache).length > 0) {
+    doSearch(true);
+  }
 }
 
-async function doSearch() {
+async function doSearch(preserveCache = false) {
   const place = document.getElementById('place').value.trim();
   if (!place) return;
-  lastData = null;
+  if (!preserveCache) dataCache = {};
   setLoading(true);
   hideError();
   try {
@@ -635,7 +639,7 @@ async function doSearch() {
     const res = await fetch(`/api/weather?place=${encodeURIComponent(place)}&mode=${currentMode}&days=${days}&t=${ts}`, { cache: 'no-store' });
     const data = await res.json();
     if (data.error) { showError(data.error); return; }
-    lastData = data;
+    dataCache[currentMode] = data;
     renderResult(data, days);
   } catch {
     showError('Something went wrong. Please check your connection and try again.');
