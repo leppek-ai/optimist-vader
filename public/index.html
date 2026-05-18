@@ -619,7 +619,6 @@ function setMode(mode, btn) {
   if (mode !== 'snow') {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
   }
-  document.querySelectorAll('.verdict-tip').forEach(s => s.remove());
   if (dataCache[mode]) {
     renderResult(dataCache[mode], getDays());
   } else if (Object.keys(dataCache).length > 0) {
@@ -648,6 +647,33 @@ async function doSearch(preserveCache = false) {
   }
 }
 
+function buildTipHtml(winner, days) {
+  if (days !== 1) return '';
+  if (currentMode === 'sun') {
+    const uv = winner.uv ?? null;
+    if (uv === null) return '';
+    let spfText;
+    if (uv <= 2)       spfText = 'SPF 15';
+    else if (uv <= 5)  spfText = 'SPF 30';
+    else if (uv <= 7)  spfText = 'SPF 30–50';
+    else if (uv <= 10) spfText = 'SPF 50';
+    else               spfText = 'SPF 50+';
+    const color = uv <= 2 ? '#3aaa55' : uv <= 5 ? '#e8a800' : uv <= 7 ? '#e06000' : uv <= 10 ? '#d02000' : '#9b00c8';
+    return `<div class="verdict-tip" role="note" aria-label="Sunscreen tip: ${esc(spfText)}" style="--accent:${color}">
+      <div class="verdict-tip__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></div>
+      <div><div class="verdict-tip__kicker">Sunscreen</div><div class="verdict-tip__text">Recommended: <span class="verdict-tip__accent">${esc(spfText)}</span></div></div>
+    </div>`;
+  } else {
+    const temp = winner.maxTemp;
+    const waxName = temp <= -4 ? 'purple' : temp <= 4 ? 'red' : 'yellow';
+    const color   = temp <= -4 ? '#7b35c1' : temp <= 4 ? '#e02020' : '#c89000';
+    return `<div class="verdict-tip" role="note" aria-label="Wax tip: ${esc(waxName)}" style="--accent:${color}">
+      <div class="verdict-tip__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 20-1.25-2.5L6 18"/><path d="M10 4 8.75 6.5 6 6"/><path d="m14 20 1.25-2.5L18 18"/><path d="m14 4 1.25 2.5L18 6"/><path d="m17 21-3-6h-4"/><path d="m17 3-3 6 1.5 3"/><path d="M2 12h6.5L10 9"/><path d="m20 10-1.5 2 1.5 2"/><path d="M22 12h-6.5L14 15"/><path d="m4 10 1.5 2L4 14"/><path d="m7 21 3-6-1.5-3"/><path d="m7 3 3 6h4"/></svg></div>
+      <div><div class="verdict-tip__kicker">Ski wax</div><div class="verdict-tip__text">Use <span class="verdict-tip__accent">${esc(waxName)}</span> wax</div></div>
+    </div>`;
+  }
+}
+
 function renderResult(data, days) {
   if (days === undefined) days = data.days || 1;
   const m = modeConfig[currentMode];
@@ -658,7 +684,6 @@ function renderResult(data, days) {
   el.innerHTML = `
     <div class="location-title">${esc(data.location.name)}, ${esc(data.location.country)}</div>
     <div class="location-sub">${days === 1 ? "Today's forecast" : '7-day forecast'} · ${esc(sourcesCount)} sources compared</div>
-
     <div class="verdict" data-mode="${esc(currentMode)}">
       <div class="verdict-eyebrow">${m.eyebrow}</div>
       <div class="verdict-headline">${m.headline(winner.source, winner[m.key], days)}</div>
@@ -672,94 +697,9 @@ function renderResult(data, days) {
         <div class="stat-item"><div class="stat-val">${esc(winner.wind)} m/s</div><div class="stat-lbl">Max wind</div></div>
         <div class="stat-item"><div class="stat-val">${esc(winner.rain)} mm</div><div class="stat-lbl">Rain</div></div>
       </div>
+      ${buildTipHtml(winner, days)}
     </div>
   `;
-
-  // SPF bubble (Sunshine mode only)
-  if (currentMode === 'sun') {
-    const uv = winner.uv ?? null;
-    let spfClass, spfText;
-    if (uv === null) {
-      spfText = null;
-    } else if (uv <= 2) {
-      spfClass = 'spf-low';      spfText = 'SPF 15';
-    } else if (uv <= 5) {
-      spfClass = 'spf-moderate'; spfText = 'SPF 30';
-    } else if (uv <= 7) {
-      spfClass = 'spf-high';     spfText = 'SPF 30–50';
-    } else if (uv <= 10) {
-      spfClass = 'spf-veryhigh'; spfText = 'SPF 50';
-    } else {
-      spfClass = 'spf-extreme';  spfText = 'SPF 50+';
-    }
-    if (spfText && days === 1) {
-      const spfColors = {'spf-low':'#3aaa55','spf-moderate':'#e8a800','spf-high':'#e06000','spf-veryhigh':'#d02000','spf-extreme':'#9b00c8'};
-      const spfColor = spfColors[spfClass] || '#0d1b2a';
-      const tip = document.createElement('div');
-      tip.className = 'verdict-tip';
-      tip.style.setProperty('--accent', spfColor);
-      tip.setAttribute('role', 'note');
-      tip.setAttribute('aria-label', `Sunscreen tip: ${spfText}`);
-      tip.innerHTML = `
-        <div class="verdict-tip__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-          </svg>
-        </div>
-        <div>
-          <div class="verdict-tip__kicker">Sunscreen</div>
-          <div class="verdict-tip__text">Recommended: <span class="verdict-tip__accent">${esc(spfText)}</span></div>
-        </div>
-      `;
-      el.querySelector('.verdict').appendChild(tip);
-    }
-  }
-
-  // Ski wax bubble (Powder mode only)
-  if (currentMode === 'snow') {
-    const temp = winner.maxTemp;
-    let waxClass, waxName;
-    if (temp <= -4) {
-      waxClass = 'purple'; waxName = 'purple';
-    } else if (temp <= 4) {
-      waxClass = 'red'; waxName = 'red';
-    } else {
-      waxClass = 'yellow'; waxName = 'yellow';
-    }
-    if (days === 1) {
-      const waxColors = { purple: '#7b35c1', red: '#e02020', yellow: '#c89000' };
-      const waxColor = waxColors[waxClass] || '#0d1b2a';
-      const tip = document.createElement('div');
-      tip.className = 'verdict-tip';
-      tip.style.setProperty('--accent', waxColor);
-      tip.setAttribute('role', 'note');
-      tip.setAttribute('aria-label', `Wax tip: ${waxName}`);
-      tip.innerHTML = `
-        <div class="verdict-tip__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m10 20-1.25-2.5L6 18" />
-            <path d="M10 4 8.75 6.5 6 6" />
-            <path d="m14 20 1.25-2.5L18 18" />
-            <path d="m14 4 1.25 2.5L18 6" />
-            <path d="m17 21-3-6h-4" />
-            <path d="m17 3-3 6 1.5 3" />
-            <path d="M2 12h6.5L10 9" />
-            <path d="m20 10-1.5 2 1.5 2" />
-            <path d="M22 12h-6.5L14 15" />
-            <path d="m4 10 1.5 2L4 14" />
-            <path d="m7 21 3-6-1.5-3" />
-            <path d="m7 3 3 6h4" />
-          </svg>
-        </div>
-        <div>
-          <div class="verdict-tip__kicker">Ski wax</div>
-          <div class="verdict-tip__text">Use <span class="verdict-tip__accent">${esc(waxName)}</span> wax</div>
-        </div>
-      `;
-      el.querySelector('.verdict').appendChild(tip);
-    } // end days===1
-  }
 
   el.style.display = 'block';
 }
