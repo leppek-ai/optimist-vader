@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<meta name="theme-color" id="theme-color-meta" content="#1a4a24" />
+<meta name="theme-color" id="theme-color-meta" content="#6aaad4" />
 <title>BestWeather</title>
 <meta name="apple-mobile-web-app-title" content="BestWeather"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -115,14 +115,14 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
-    background-color: #1a4a24;
+    background-color: #6aaad4;
     background-image: none;
     background-repeat: no-repeat;
     min-height: 100%;
     overscroll-behavior-y: none;
   }
   html.mode-sun {
-    background-color: #c8a85c;
+    background-color: #2398d8;
     background-image: linear-gradient(180deg, #2398d8 0%, #2398d8 54%, #f2dea0 78%, #c8a85c 100%);
   }
 
@@ -145,9 +145,6 @@
     transition: none;
     overscroll-behavior-y: none;
     overflow-x: hidden;
-  }
-  @media (pointer: coarse) {
-    body { background-attachment: scroll; }
   }
 
   body.bg-snow {
@@ -492,15 +489,15 @@
       box-shadow: 0 0 0 14px rgba(255,232,144,0.12);
     }
     body.bg-sun::after {
-      top: 66vh;
-      height: 18vh;
+      top: 63vh;
+      height: 19vh;
     }
     body.bg-sun .wave-svg { left: -24px; width: calc(100% + 48px); }
-    body.bg-sun .wave-svg.w1 { top: 61vh; }
-    body.bg-sun .wave-svg.w2 { top: 64vh; }
-    body.bg-sun .wave-svg.w3 { top: 67vh; }
-    body.bg-sun .wave-svg.w4 { top: 70vh; }
-    body.bg-sun .wave-svg.w5 { top: 73vh; }
+    body.bg-sun .wave-svg.w1 { top: 52vh; }
+    body.bg-sun .wave-svg.w2 { top: 56vh; }
+    body.bg-sun .wave-svg.w3 { top: 60vh; }
+    body.bg-sun .wave-svg.w4 { top: 63vh; }
+    body.bg-sun .wave-svg.w5 { top: 66vh; }
   }
 
 
@@ -630,7 +627,7 @@ function setMode(mode, btn) {
   btn.classList.add('active');
   document.body.className = mode === 'snow' ? 'bg-snow' : 'bg-sun';
   document.documentElement.className = mode === 'sun' ? 'mode-sun' : '';
-  document.getElementById('theme-color-meta').setAttribute('content', mode === 'snow' ? '#1a4a24' : '#2398d8');
+  document.getElementById('theme-color-meta').setAttribute('content', mode === 'snow' ? '#6aaad4' : '#2398d8');
   document.getElementById('place').placeholder = placeholders[mode];
   if (mode !== 'snow') {
     document.querySelectorAll('.snowflake').forEach(f => f.remove());
