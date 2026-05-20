@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <link id="apple-touch-icon" rel="apple-touch-icon" sizes="180x180" />
 <link id="favicon" rel="icon" type="image/png" sizes="32x32" />
+  <link rel="manifest" href="/manifest.json">
 <script>
 (function(){
   const sz = 180, r = 40, half = sz / 2;
@@ -790,4 +791,22 @@ document.addEventListener('visibilitychange', () => {
   </svg>
 </div>
 </body>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('ServiceWorker registered', reg);
+    }).catch(err => console.warn('SW registration failed', err));
+  });
+
+  // Optional: prompt handling
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // You can show an install button to the user and call deferredPrompt.prompt()
+    console.log('beforeinstallprompt captured');
+  });
+}
+</script>
 </html>

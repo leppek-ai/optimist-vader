@@ -1,0 +1,16 @@
+{
+  "name": "BestWeather",
+  "short_name": "BestWeather",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#6aaad4",
+  "theme_color": "#6aaad4",
+  "description": "Compare snowfall and sunshine forecasts to find the best conditions.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
