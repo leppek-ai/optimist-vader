@@ -53,7 +53,11 @@ async function fetchYr(lat, lon, days, tzOffsetHours = 0) {
     if (symbolCode.includes('snow') || symbolCode.includes('sleet')) totalSnow += precip;
     totalRain += precip;
     maxWind = Math.max(maxWind, t.data.instant.details.wind_speed || 0);
-    maxTemp = Math.max(maxTemp, t.data.instant.details.air_temperature || -99);
+    const instantTemp = t.data.instant.details.air_temperature ?? -99;
+    const periodMax   = t.data.next_6_hours?.details?.air_temperature_max
+                     ?? t.data.next_1_hours?.details?.air_temperature_max
+                     ?? -99;
+    maxTemp = Math.max(maxTemp, instantTemp, periodMax);
     if ((t.data.instant.details.cloud_area_fraction || 100) < 30) sunHours += 1;
   }
   return { source: 'yr.no', snow: Math.round(totalSnow * 0.1), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp), uv: null };
