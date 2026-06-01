@@ -1,5 +1,14 @@
 const OWM_KEY = process.env.OWM_API_KEY;
 
+// Returns "YYYY-MM-DD" for a UTC timestamp shifted by tzOffsetHours
+function localDate(isoOrMs, tzOffsetHours) {
+  const ms = typeof isoOrMs === 'number' ? isoOrMs * 1000 : new Date(isoOrMs).getTime();
+  return new Date(ms + tzOffsetHours * 3600000).toISOString().slice(0, 10);
+}
+function todayLocal(tzOffsetHours) {
+  return new Date(Date.now() + tzOffsetHours * 3600000).toISOString().slice(0, 10);
+}
+
 async function geocode(place) {
   const encoded = encodeURIComponent(place);
   try {
@@ -26,12 +35,14 @@ async function geocode(place) {
   return { lat: r.latitude, lon: r.longitude, name: r.name, country: r.country, countryCode: r.country_code?.toUpperCase() || '' };
 }
 
-async function fetchYr(lat, lon, days) {
+async function fetchYr(lat, lon, days, tzOffsetHours = 0) {
   const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
   const res = await fetch(url, { headers: { 'User-Agent': 'OptimistVader/1.0 contact@example.com' } });
   const data = await res.json();
-  const hours = days === 1 ? 24 : 168;
-  const timeseries = data.properties.timeseries.slice(0, hours);
+  const all = data.properties.timeseries;
+  const timeseries = days === 1
+    ? all.filter(t => localDate(t.time, tzOffsetHours) === todayLocal(tzOffsetHours))
+    : all.slice(0, 168);
   let totalSnow = 0, totalRain = 0, maxWind = 0, sunHours = 0, maxTemp = -99;
   for (const t of timeseries) {
     const next1h = t.data.next_1_hours;
@@ -112,15 +123,17 @@ async function fetchOpenMeteoECMWF(lat, lon, days) {
   };
 }
 
-async function fetchOWM(lat, lon, days) {
+async function fetchOWM(lat, lon, days, tzOffsetHours = 0) {
   if (!OWM_KEY) return null;
   const cnt = days === 1 ? 8 : 56;
   const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OWM_KEY}&units=metric&cnt=${cnt}`;
   const res = await fetch(url);
   const data = await res.json();
   if (!data.list) return null;
+  const today = todayLocal(tzOffsetHours);
+  const list = days === 1 ? data.list.filter(i => localDate(i.dt, tzOffsetHours) === today) : data.list;
   let totalSnow = 0, totalRain = 0, maxWind = 0, sunHours = 0, maxTemp = -99;
-  for (const item of data.list) {
+  for (const item of list) {
     totalSnow += item.snow?.['3h'] || 0;
     totalRain += item.rain?.['3h'] || 0;
     maxWind = Math.max(maxWind, item.wind?.speed || 0);
@@ -130,7 +143,7 @@ async function fetchOWM(lat, lon, days) {
   return { source: 'OpenWeatherMap', snow: Math.round(totalSnow / 10), rain: Math.round(totalRain), wind: Math.round(maxWind), sun: Math.round(sunHours), maxTemp: Math.round(maxTemp), uv: null };
 }
 
-async function fetchSMHI(lat, lon, days) {
+async function fetchSMHI(lat, lon, days, tzOffsetHours = 0) {
   // SMHI only covers Sweden (roughly lat 55-70, lon 10-25)
   if (lat < 54.5 || lat > 70.5 || lon < 9.5 || lon > 25.5) return null;
   const url = `https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon.toFixed(4)}/lat/${lat.toFixed(4)}/data.json`;
@@ -138,9 +151,13 @@ async function fetchSMHI(lat, lon, days) {
     const res = await fetch(url);
     if (!res.ok) return null;
     const data = await res.json();
-    const limit = days === 1 ? 24 : 168;
+    const today = todayLocal(tzOffsetHours);
+    const all = data.timeSeries || [];
+    const series = days === 1
+      ? all.filter(t => localDate(t.validTime, tzOffsetHours) === today)
+      : all.slice(0, 168);
     let totalSnow = 0, totalRain = 0, maxWind = 0, sunHours = 0, maxTemp = -99;
-    for (const t of (data.timeSeries?.slice(0, limit) || [])) {
+    for (const t of series) {
       const params = {};
       for (const p of t.parameters) params[p.name] = p.values[0];
       // pcat: 0=no precip, 1=snow, 2=sleet, 3=rain, 4=freezing rain, 5=freezing drizzle
@@ -294,9 +311,10 @@ export const handler = async (event) => {
   try {
     const location = await geocode(place);
     const { lat, lon } = location;
+    const tzOffsetHours = Math.round(lon / 15); // rough local UTC offset from longitude
 
     const results = await Promise.allSettled([
-      fetchYr(lat, lon, days),
+      fetchYr(lat, lon, days, tzOffsetHours),
       fetchOpenMeteo(lat, lon, days),
       fetchOpenMeteoIcon(lat, lon, days),
       fetchOpenMeteoGFS(lat, lon, days),
@@ -306,8 +324,8 @@ export const handler = async (event) => {
       fetchOpenMeteoModel(lat, lon, days, 'knmi_seamless',         'Open-Meteo (KNMI)'),
       fetchOpenMeteoModel(lat, lon, days, 'ukmet_seamless',        'Open-Meteo (UK Met)'),
       fetchOpenMeteoModel(lat, lon, days, 'gem_seamless',          'Open-Meteo (GEM)'),
-      fetchOWM(lat, lon, days),
-      fetchSMHI(lat, lon, days),
+      fetchOWM(lat, lon, days, tzOffsetHours),
+      fetchSMHI(lat, lon, days, tzOffsetHours),
       fetchTomorrow(lat, lon, days),
       fetchBergfex(place, lat, lon, days),
     ]);
