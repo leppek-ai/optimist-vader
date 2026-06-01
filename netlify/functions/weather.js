@@ -167,6 +167,59 @@ async function fetchSMHI(lat, lon, days) {
 }
 
 
+async function fetchOpenMeteoModel(lat, lon, days, model, sourceName) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=snowfall_sum,precipitation_sum,windspeed_10m_max,sunshine_duration,temperature_2m_max,uv_index_max&forecast_days=${days}&timezone=auto&models=${model}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if (!data.daily) return null;
+  const d = data.daily;
+  return {
+    source: sourceName,
+    snow: Math.round(d.snowfall_sum.reduce((a, b) => a + (b || 0), 0)),
+    rain: Math.round(d.precipitation_sum.reduce((a, b) => a + (b || 0), 0)),
+    wind: Math.round(Math.max(...d.windspeed_10m_max.map(v => v || 0))),
+    sun: Math.round(d.sunshine_duration.reduce((a, b) => a + (b || 0), 0) / 3600),
+    maxTemp: Math.round(Math.max(...d.temperature_2m_max.map(v => v || 0))),
+    uv: Math.round(Math.max(...(d.uv_index_max || [0]).map(v => v || 0)))
+  };
+}
+
+async function fetchTomorrow(lat, lon, days) {
+  const KEY = process.env.TOMORROW_API_KEY;
+  if (!KEY) return null;
+  try {
+    const url = `https://api.tomorrow.io/v4/weather/forecast?location=${lat},${lon}&timesteps=1d&units=metric&apikey=${KEY}`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const daily = (data.timelines?.daily || []).slice(0, days);
+    if (!daily.length) return null;
+    let totalSnow = 0, totalRain = 0, maxWind = 0, sunHours = 0, maxTemp = -99, maxUv = 0;
+    for (const d of daily) {
+      const v = d.values || {};
+      totalSnow += v.snowAccumulationSum || 0;
+      totalRain += (v.precipitationIntensityAvg || 0) * 24;
+      maxWind = Math.max(maxWind, v.windSpeedMax || 0);
+      maxTemp = Math.max(maxTemp, v.temperatureMax ?? -99);
+      maxUv = Math.max(maxUv, v.uvIndexMax || 0);
+      const cloud = v.cloudCoverAvg ?? 100;
+      const rise = v.sunriseTime ? new Date(v.sunriseTime) : null;
+      const set  = v.sunsetTime  ? new Date(v.sunsetTime)  : null;
+      const daylight = (rise && set) ? (set - rise) / 3600000 : 12;
+      sunHours += daylight * (1 - cloud / 100);
+    }
+    return {
+      source: 'Tomorrow.io',
+      snow: Math.round(totalSnow),
+      rain: Math.round(totalRain),
+      wind: Math.round(maxWind),
+      sun: Math.round(sunHours),
+      maxTemp: Math.round(maxTemp),
+      uv: Math.round(maxUv)
+    };
+  } catch { return null; }
+}
+
 async function fetchBergfex(place, lat, lon, days) {
   const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
   if (!ANTHROPIC_KEY) return null;
@@ -248,8 +301,14 @@ export const handler = async (event) => {
       fetchOpenMeteoIcon(lat, lon, days),
       fetchOpenMeteoGFS(lat, lon, days),
       fetchOpenMeteoECMWF(lat, lon, days),
+      fetchOpenMeteoModel(lat, lon, days, 'meteofrance_seamless',  'Open-Meteo (Météo-France)'),
+      fetchOpenMeteoModel(lat, lon, days, 'dmi_seamless',          'Open-Meteo (DMI)'),
+      fetchOpenMeteoModel(lat, lon, days, 'knmi_seamless',         'Open-Meteo (KNMI)'),
+      fetchOpenMeteoModel(lat, lon, days, 'ukmet_seamless',        'Open-Meteo (UK Met)'),
+      fetchOpenMeteoModel(lat, lon, days, 'gem_seamless',          'Open-Meteo (GEM)'),
       fetchOWM(lat, lon, days),
       fetchSMHI(lat, lon, days),
+      fetchTomorrow(lat, lon, days),
       fetchBergfex(place, lat, lon, days),
     ]);
 
