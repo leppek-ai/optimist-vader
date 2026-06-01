@@ -599,7 +599,7 @@ function esc(str) {
 
 const modeConfig = {
   snow: { key: 'snow', unit: 'cm', label: 'snowfall', eyebrow: 'Best snow forecast', detail: 'Source with most snowfall selected', headline: (s,v,d) => `${esc(s)} promises ${esc(v)} cm of fresh snow ${d===1?'today':'over the coming week'}` },
-  sun:  { key: 'sun',  unit: 'h',  label: 'sun hours', eyebrow: 'Most sunshine across sources', detail: 'Source with most sunshine hours selected', headline: (s,v,d) => `${esc(s)} forecasts ${esc(v)} hours of sunshine ${d===1?'today':'over the next 7 days'}` },
+  sun:  { key: 'maxTemp', unit: '°C', label: 'max temp', eyebrow: 'Warmest forecast', detail: 'Source with highest max temperature selected', headline: (s,v,d) => `${esc(s)} forecasts ${esc(v)}°C max temperature ${d===1?'today':'over the next 7 days'}` },
 };
 
 function getDays() { return document.getElementById('seven-days').checked ? 7 : 1; }
@@ -762,6 +762,13 @@ function createSnow() {
   document.body.appendChild(flake);
   setTimeout(() => flake.remove(), (duration + delay) * 1000);
 }
+// Dec–Mar = snow (months 11,0,1,2), Apr–Nov = sun
+const _m = new Date().getMonth();
+const _seasonMode = (_m <= 2 || _m >= 11) ? 'snow' : 'sun';
+if (_seasonMode !== 'snow') {
+  setMode('sun', document.querySelector('.mode-btn[data-mode="sun"]'));
+}
+
 let snowInterval = setInterval(createSnow, 180);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {

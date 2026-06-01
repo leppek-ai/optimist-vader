@@ -259,7 +259,7 @@ export const handler = async (event) => {
 
     if (!sources.length) throw new Error('Kunde inte hämta väderdata');
 
-    const modeKey = { snow: 'snow', sun: 'sun' }[mode] || 'snow';
+    const modeKey = mode === 'sun' ? 'maxTemp' : 'snow';
     const winner = sources.reduce((a, b) => (b[modeKey] > a[modeKey] ? b : a), sources[0]);
 
     return {
